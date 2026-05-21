@@ -4,7 +4,7 @@ import { adminLoginAPI } from "../../../services/allAPI";
 
 function Login() {
     const navigate = useNavigate()
-    const [adminData, setAdminData] = useState({ 'email': '', 'password': '' })
+    const [adminData, setAdminData] = useState({ 'email':'', 'password':'' })
 
     const handleLogin = async () => {
         //console.log(adminData);
@@ -58,7 +58,7 @@ function Login() {
                     type="password"
                     placeholder="Password"
                     className="w-full mb-6 p-2 border rounded outline-none"
-                    onChange={(e) => setAdminData({ ...adminData, password: e.target.value })}
+                    onChange={(e) => setAdminData({ ...adminData,password: e.target.value })}
                 />
 
                 <button onClick={handleLogin} className="w-full bg-black text-white py-2 rounded">

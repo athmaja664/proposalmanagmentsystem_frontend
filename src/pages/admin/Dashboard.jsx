@@ -1,8 +1,37 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import Sidebar from "../../components/Sidebar";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { listProposalAPI } from "../../../services/allAPI";
 
 function Dashboard() {
+    const navigate = useNavigate()
+    const [proposalData, setProposalData] = useState([])
+    const getProposals = async () => {
+        const token = localStorage.getItem('token')
+        const reqHeader = { Authorization: `Bearer ${token}` }
+        const response = await listProposalAPI(reqHeader)
+        if (response.status === 200) {
+            setProposalData(response.data)
+        }
+    }
+    useEffect(() => {
+        getProposals()
+    }, [])
+
+    const totalProposals=proposalData.length
+    const acceptedProposals=proposalData.filter((item)=>item.status==='Accepted').length
+    const sentingProposals=proposalData.filter((item)=>item.status==='Sent').length
+    const rejectedProposals=proposalData.filter((item)=>item.status==='Rejected').length
+    
+
+    const getStatusStyle=(status)=>{
+        if(status==='Accepted')
+            return 'bg-green-100 text-green-700'
+        if(status==='Sent')return 'bg-yellow-100 text-yellow-700'
+       if (status === 'Draft') return 'bg-gray-200 text-gray-700'
+        if(status==='Rejected')return 'bg-red-100 text-red-700'
+        if(status==='Archived')return 'bg-blue-100 text-blue-700'
+    }
     return (
         <>
             <div className="flex">
@@ -28,27 +57,27 @@ function Dashboard() {
                         </button>
                     </div>
 
-                    {/* Cards */}q
+                    {/* Cards */}
                     <div className="grid grid-cols-4 gap-5 mt-8">
 
                         <div className="bg-white p-4 rounded shadow">
                             <p className="text-gray-500">Total Proposals</p>
-                            <h2 className="text-2xl font-bold">24</h2>
+                            <h2 className="text-2xl font-bold">{totalProposals}</h2>
                         </div>
 
                         <div className="bg-white p-4 rounded shadow">
                             <p className="text-gray-500">Accepted</p>
-                            <h2 className="text-2xl font-bold text-green-600">12</h2>
+                            <h2 className="text-2xl font-bold text-green-600">{acceptedProposals}</h2>
                         </div>
 
                         <div className="bg-white p-4 rounded shadow">
-                            <p className="text-gray-500">Pending</p>
-                            <h2 className="text-2xl font-bold text-yellow-600">7</h2>
+                            <p className="text-gray-500">Sent</p>
+                            <h2 className="text-2xl font-bold text-yellow-400">{sentingProposals}</h2>
                         </div>
 
                         <div className="bg-white p-4 rounded shadow">
                             <p className="text-gray-500">Rejected</p>
-                            <h2 className="text-2xl font-bold text-red-600">5</h2>
+                            <h2 className="text-2xl font-bold text-red-600">{rejectedProposals}</h2>
                         </div>
 
                     </div>
@@ -70,39 +99,21 @@ function Dashboard() {
                             </thead>
 
                             <tbody>
+                                {proposalData.slice(-4).map((item) => (
+                                    <tr key={item._id} className="border-b">
+                                        <td className="p-2">{item.projectId.projectName}</td>
+                                        <td className="p-2 text-gray-500">{item.clientId.name}</td>
+                                        <td className="p-2">
+                                           <span className={`${getStatusStyle(item.status)} px-2 py-1 rounded text-xs`}>
+    {item.status}
+</span>
+                                        </td>
+                                        <td className="p-2 text-gray-500">{item.createdAt.slice(0, 10)}</td>
+                                    </tr>
+                                ))}
 
-                                <tr className="border-b">
-                                    <td className="p-2">Website redesign</td>
-                                    <td className="p-2 text-gray-500">Acme Corp</td>
-                                    <td className="p-2">
-                                        <span className="bg-green-100 text-green-700 px-2 py-1 rounded text-xs">
-                                            Accepted
-                                        </span>
-                                    </td>
-                                    <td className="p-2 text-gray-500">May 2</td>
-                                </tr>
 
-                                <tr className="border-b">
-                                    <td className="p-2">Mobile app</td>
-                                    <td className="p-2 text-gray-500">Beta Ltd</td>
-                                    <td className="p-2">
-                                        <span className="bg-yellow-100 text-yellow-700 px-2 py-1 rounded text-xs">
-                                            Pending
-                                        </span>
-                                    </td>
-                                    <td className="p-2 text-gray-500">May 1</td>
-                                </tr>
 
-                                <tr>
-                                    <td className="p-2">Brand identity</td>
-                                    <td className="p-2 text-gray-500">Gamma Inc</td>
-                                    <td className="p-2">
-                                        <span className="bg-gray-200 px-2 py-1 rounded text-xs">
-                                            Draft
-                                        </span>
-                                    </td>
-                                    <td className="p-2 text-gray-500">Apr 30</td>
-                                </tr>
 
                             </tbody>
                         </table>

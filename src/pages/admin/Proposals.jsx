@@ -1,112 +1,187 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import Sidebar from "../../components/Sidebar";
-import { Link } from "react-router-dom";
-
+import { useNavigate } from "react-router-dom";
+import { deleteProposalAPI, listProposalAPI } from "../../../services/allAPI";
+import EditProposalModal from "../../components/EditProposalModal";
+import ViewProposalModal from "../../components/ViewProposalModal";
 function Proposals() {
+
+    const [showModal, setShowModal] = useState(false)
+    const [showViewModal, setShowViewModal] = useState(false)
+    const navigate = useNavigate()
+    const [searchKey, setSearchKey] = useState("")
+    const [statusFilter, setStatusFilter] = useState("All Status")
+    const [proposals, setProposals] = useState([])
+    const [selectedProposal, setSelectedProposal] = useState(null)
+    const token = localStorage.getItem('token')
+    const getProposals = async () => {
+
+        const reqHeader = { Authorization: `Bearer ${token}` }
+        const response = await listProposalAPI(reqHeader)
+        if (response.status === 200) {
+            setProposals(response.data)
+        }
+    }
+
+    const handleDelete = async (id) => {
+        if (window.confirm("Are you sure you want to delete")) {
+
+            const reqHeader = { Authorization: `Bearer ${token}` }
+            const response = await deleteProposalAPI(id, reqHeader)
+            console.log(response);
+            if (response.status === 200) {
+                alert('proposal deleted successfully')
+                getProposals()
+            }
+        }
+
+    }
+
+    useEffect(() => {
+        getProposals()
+    }, [])
+
+
+
+    const filterProposal = proposals.filter((item) =>
+        (
+            item.projectId.projectName.toLowerCase().includes(searchKey.toLowerCase()) ||
+            item.clientId.name.toLowerCase().includes(searchKey.toLowerCase())
+        )
+        &&
+        (
+            statusFilter === "All Status" ||
+            item.status === statusFilter
+        )
+    )
+
+    const getStatusStyle = (status) => {
+        if (status === 'Accepted') return 'bg-green-100 text-green-700'
+        if (status === 'Sent') return 'bg-yellow-100 text-yellow-700'
+        if (status === 'Draft') return 'bg-gray-200 text-gray-700'
+        if (status === 'Rejected') return 'bg-red-100 text-red-700'
+        if (status === 'Archived') return 'bg-blue-100 text-blue-700'
+    }
+
     return (
-        <div className="flex">
+        <>
+            <div className="flex min-h-screen bg-blue-50">
 
-            <Sidebar />
+                <Sidebar />
 
-            <div className="flex-1 bg-blue-50 p-6">
+                <div className="flex-1 p-8">
 
-                {/* Header */}
-                <div className="flex justify-between items-center mb-6">
-                    <h1 className="text-2xl font-semibold">Proposals</h1>
+                    {/* Header */}
+                    <div className="flex justify-between items-center mb-8">
+                        <h1 className="text-3xl font-bold text-gray-800 tracking-wide">
+                            Proposals
+                        </h1>
+                    </div>
 
-                    <button className="bg-black text-white px-4 py-2 rounded">
-                        <Link to="/createproposal" className="text-white py-2 ">
-                            + New Proposal
-                        </Link>
-                    </button>
-                </div>
+                    {/* Filters */}
+                    <div className="flex flex-wrap gap-4 mb-6">
+                        <input
+                            type="text"
+                            placeholder="Search proposals"
+                            className="border border-gray-300 bg-white px-4 py-3 rounded-lg w-72 outline-none focus:ring-2 focus:ring-blue-400 text-sm"
+                            onChange={(e) => setSearchKey(e.target.value)}
+                        />
+                        <select
+                            className="border border-gray-300 bg-white px-4 py-3 rounded-lg outline-none focus:ring-2 focus:ring-blue-400 text-sm"
+                            onChange={(e) => setStatusFilter(e.target.value)}
+                        >
+                            <option>All Status</option>
+                            <option>Draft</option>
+                            <option>Sent</option>
+                            <option>Accepted</option>
+                            <option>Rejected</option>
+                        </select>
+                    </div>
 
-                {/* Search + Filter */}
-                <div className="flex gap-3 mb-4">
-                    <input
-                        type="text"
-                        placeholder="Search proposals..."
-                        className="border p-2 rounded w-64"
-                    />
+                    {/* Table */}
+                    <div className="bg-white rounded-2xl shadow-sm overflow-hidden border border-gray-200">
+                        <table className="w-full text-sm">
+                            <thead className="bg-gray-100 border-b text-gray-700">
+                                <tr>
+                                    <th className="text-left px-6 py-4 font-semibold">Project</th>
+                                    <th className="text-left px-6 py-4 font-semibold">Client</th>
+                                    <th className="text-left px-6 py-4 font-semibold">Status</th>
+                                    <th className="text-left px-6 py-4 font-semibold">Valid Until</th>
+                                    <th className="text-left px-6 py-4 font-semibold">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {filterProposal.length ? filterProposal.map((item) => (
+                                    <tr key={item._id} className="border-b hover:bg-gray-50 transition-all">
+                                        <td className="px-6 py-4 font-medium text-gray-800">
+                                            {item.projectId.projectName}
+                                        </td>
+                                        <td className="px-6 py-4 text-gray-500">
+                                            {item.clientId.name}
+                                        </td>
+                                        <td className="px-6 py-4">
+                                            <span className={`${getStatusStyle(item.status)} px-3 py-1 rounded-full text-xs font-medium`}>
+                                                {item.status}
+                                            </span>
+                                        </td>
+                                        <td className="px-6 py-4 text-gray-500">
+                                            {item.createdAt.slice(0, 10)}
+                                        </td>
+                                        <td className="px-6 py-4 space-x-3">
+                                            <span
+                                                onClick={() => {
+                                                    setSelectedProposal(item)
+                                                    setShowViewModal(true)
+                                                }}
+                                                className="text-blue-600 cursor-pointer hover:underline"
+                                            >
+                                                View
+                                            </span>
+                                            <span
+                                                onClick={() => {
+                                                    setSelectedProposal(item)
+                                                    setShowModal(true)
+                                                }
+                                                }
 
-                    <select className="border p-2 rounded">
-                        <option>All Status</option>
-                        <option>Draft</option>
-                        <option>Sent</option>
-                        <option>Accepted</option>
-                        <option>Rejected</option>
-                    </select>
-                </div>
-
-                {/* Table */}
-                <div className="bg-white rounded shadow">
-
-                    <table className="w-full text-sm">
-                        <thead className="bg-gray-100 border-b">
-                            <tr>
-                                <th className="text-left p-3">Project</th>
-                                <th className="text-left p-3">Client</th>
-                                <th className="text-left p-3">Status</th>
-                                <th className="text-left p-3">Valid Until</th>
-                                <th className="text-left p-3">Actions</th>
-                            </tr>
-                        </thead>
-
-                        <tbody>
-
-                            <tr className="border-b">
-                                <td className="p-3 font-medium">Website redesign</td>
-                                <td className="p-3 text-gray-500">Acme Corp</td>
-                                <td className="p-3">
-                                    <span className="bg-green-100 text-green-700 px-2 py-1 rounded text-xs">
-                                        Accepted
-                                    </span>
-                                </td>
-                                <td className="p-3 text-gray-500">Jun 1</td>
-                                <td className="p-3 space-x-2 text-sm">
-                                    <span className="text-blue-600 cursor-pointer">View</span>
-                                    <span className="text-gray-500 cursor-pointer">Share</span>
-                                </td>
-                            </tr>
-
-                            <tr className="border-b">
-                                <td className="p-3 font-medium">Mobile app</td>
-                                <td className="p-3 text-gray-500">Beta Ltd</td>
-                                <td className="p-3">
-                                    <span className="bg-yellow-100 text-yellow-700 px-2 py-1 rounded text-xs">
-                                        Sent
-                                    </span>
-                                </td>
-                                <td className="p-3 text-gray-500">May 20</td>
-                                <td className="p-3 space-x-2 text-sm">
-                                    <span className="text-blue-600 cursor-pointer">View</span>
-                                    <span className="text-gray-500 cursor-pointer">Edit</span>
-                                </td>
-                            </tr>
-
-                            <tr>
-                                <td className="p-3 font-medium">Brand identity</td>
-                                <td className="p-3 text-gray-500">Gamma Inc</td>
-                                <td className="p-3">
-                                    <span className="bg-gray-200 px-2 py-1 rounded text-xs">
-                                        Draft
-                                    </span>
-                                </td>
-                                <td className="p-3 text-gray-500">May 30</td>
-                                <td className="p-3 space-x-2 text-sm">
-                                    <span className="text-blue-600 cursor-pointer">View</span>
-                                    <span className="text-red-500 cursor-pointer">Delete</span>
-                                </td>
-                            </tr>
-
-                        </tbody>
-
-                    </table>
+                                                className="text-gray-500 cursor-pointer hover:underline">
+                                                Edit
+                                            </span>
+                                            <span onClick={() => handleDelete(item._id)} className="text-red-500 cursor-pointer hover:underline">Delete</span>
+                                        </td>
+                                    </tr>
+                                )) : (
+                                    <tr>
+                                        <td colSpan='5' className="text-center py-4">
+                                            No proposals found
+                                        </td>
+                                    </tr>
+                                )}
+                            </tbody>
+                        </table>
+                    </div>
 
                 </div>
-
             </div>
-        </div>
+
+            {/* Modal - outside main div */}
+           {/* Edit Modal */}
+{showModal && (
+    <EditProposalModal
+        onClose={() => setShowModal(false)}
+        proposal={selectedProposal}
+        getProposals={getProposals}
+    />
+)}
+
+{/* View Modal */}
+{showViewModal && (
+    <ViewProposalModal
+        proposal={selectedProposal}
+        onClose={() => setShowViewModal(false)}
+    />
+)}
+        </>
     );
 }
 

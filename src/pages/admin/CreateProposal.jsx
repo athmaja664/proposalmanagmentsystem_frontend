@@ -1,85 +1,280 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import Sidebar from "../../components/Sidebar";
-
+import { useNavigate } from "react-router-dom";
+import { addclientAPI, addprojectAPI, createProposalAPI, getclientAPI, getProjectAPI } from "../../../services/allAPI";
+// import Select from 'react-select'
 function CreateProposal() {
+    const navigate = useNavigate()
+
+    // show/hide new client/project
+    const [showNewClient, setShowNewClient] = useState(false)
+    const [showNewProject, setShowNewProject] = useState(false)
+
+    // dropdown data
+    const [clients, setClients] = useState([])
+    const [projects, setProjects] = useState([])
+
+    // form data
+    const [proposalData, setProposalData] = useState({
+        clientId: '',
+        projectId: '',
+        cost: '',
+        status: 'Draft',
+        description: '',
+        document: ''
+    })
+
+    // new client data
+    const [newClientData, setNewClientData] = useState({
+        name: '',
+        email: ''
+    })
+
+    // new project data
+    const [newProjectData, setNewProjectData] = useState({
+        projectName: ''
+    })
+
+    const token = localStorage.getItem('token')
+    const reqHeader = { Authorization: `Bearer ${token}` }
+
+    // fetch clients
+    const getClients = async () => {
+        const response = await getclientAPI(reqHeader)
+        if (response.status === 200) 
+            setClients(response.data)
+    }
+
+    // fetch projects
+    const getProjects = async () => {
+        const response = await getProjectAPI(reqHeader)
+        if (response.status === 200) 
+            setProjects(response.data)
+    }
+
+    useEffect(() => {
+        getClients()
+        getProjects()
+    }, [])
+
+    // handle client dropdown change
+    const handleClientChange = (e) => {
+        if (e.target.value === 'new') {
+            setShowNewClient(true)
+            setProposalData({ ...proposalData, clientId: '' })
+        } else {
+            setShowNewClient(false)
+            setProposalData({ ...proposalData, clientId: e.target.value })
+        }
+    }
+
+    // handle project dropdown change
+    const handleProjectChange = (e) => {
+        if (e.target.value === 'new') {
+            setShowNewProject(true)
+            setProposalData({ ...proposalData, projectId: '' })
+        } else {
+            setShowNewProject(false)
+            setProposalData({ ...proposalData, projectId: e.target.value })
+        }
+    }
+
+    const handleCreate = async () => {
+        let clientId = proposalData.clientId
+        let projectId = proposalData.projectId
+
+        // if new client → save first
+        if (showNewClient) {
+            if (!newClientData.name || !newClientData.email) {
+                alert('Please fill client Form')
+                return
+            }
+            const clientRes = await addclientAPI(newClientData, reqHeader)
+            if (clientRes.status === 200) {
+                clientId = clientRes.data.newClient._id
+            } else {
+                alert(clientRes.data.message)
+                return
+            }
+        }
+
+        // if new project → save first
+        if (showNewProject) {
+            if (!newProjectData.projectName) {
+                alert('Please fill project name!')
+                return
+            }
+            const projectRes = await addprojectAPI({ projectName: newProjectData.projectName, clientId }, reqHeader)
+            if (projectRes.status === 200) {
+                projectId = projectRes.data.newProject._id
+            } else {
+                alert(projectRes.data.message)
+                return
+            }
+        }
+
+        if (!clientId || !projectId || !proposalData.description) {
+            alert('Please fill all required fields!')
+            return
+        }
+
+        const formData = new FormData()
+        formData.append('clientId', clientId)
+        formData.append('projectId', projectId)
+        formData.append('cost', proposalData.cost)
+        formData.append('status', proposalData.status)
+        formData.append('description', proposalData.description)
+        formData.append('document', proposalData.document)
+
+        const fileHeader = {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "multipart/form-data"
+        }
+
+        const response = await createProposalAPI(formData, fileHeader)
+        console.log(response)
+
+        if (response.status === 200) {
+            alert('Proposal Created Successfully!')
+            navigate('/proposals')
+        } else {
+            alert(response.data.message)
+        }
+    }
+
     return (
         <div className="flex">
-
             <Sidebar />
-
             <div className="flex-1 bg-blue-50 p-6">
-
-                <h1 className="text-2xl font-semibold mb-6">
-                    Create Proposal
-                </h1>
+                <h1 className="text-2xl font-semibold mb-2">Create Proposal</h1>
+                <p className="text-gray-500 text-sm mb-6">Fill in the details below</p>
 
                 <div className="bg-white p-6 rounded shadow">
-
-                    {/* Form Grid */}
                     <div className="grid grid-cols-2 gap-4">
 
-                        <input
-                            type="text"
-                            placeholder="Project Name"
-                            className="border p-2 rounded"
-                        />
+                        
+                        <div>
+                            <label className="text-sm text-gray-500 mb-1 block">Select Client</label>
+                            <select className="border p-2 rounded w-full" onChange={handleClientChange}>
+                                <option value="">Select client</option>
+                                {clients.map(client => (
+                                    <option key={client._id} value={client._id}>{client.name}</option>
+                                ))}
+                                <option value="new">+ New Client</option>
+                            </select>
+                        </div>
 
-                        <input
-                            type="text"
-                            placeholder="Client Name"
-                            className="border p-2 rounded"
-                        />
+                        
+                        <div>
+                            <label className="text-sm text-gray-500 mb-1 block">Select Project</label>
+                            <select className="border p-2 rounded w-full" onChange={handleProjectChange}>
+                                <option value="">Select project</option>
+                                {projects.map(project => (
+                                    <option key={project._id} value={project._id}>{project.projectName}</option>
+                                ))}
+                                <option value="new">+ New Project</option>
+                            </select>
+                        </div>
 
-                        <input
-                            type="email"
-                            placeholder="Client Email"
-                            className="border p-2 rounded"
-                        />
+                        
+                        {showNewClient && (
+                            <div className="col-span-2 bg-gray-50 p-4 rounded border">
+                                <p className="text-sm font-medium mb-3">New client details</p>
+                                <div className="grid grid-cols-2 gap-4">
+                                    <div>
+                                        <label className="text-sm text-gray-500 mb-1 block">Client Name</label>
+                                        <input
+                                            type="text"
+                                            placeholder="Acme Corp"
+                                            className="border p-2 rounded w-full"
+                                            onChange={(e) => setNewClientData({ ...newClientData, name: e.target.value })}
+                                        />
+                                    </div>
+                                    <div>
+                                        <label className="text-sm text-gray-500 mb-1 block">Client Email</label>
+                                        <input
+                                            type="email"
+                                            placeholder="acme@gmail.com"
+                                            className="border p-2 rounded w-full"
+                                            onChange={(e) => setNewClientData({ ...newClientData, email: e.target.value })}
+                                        />
+                                    </div>
+                                </div>
+                            </div>
+                        )}
 
-                        <input
-                            type="number"
-                            placeholder="Cost"
-                            className="border p-2 rounded"
-                        />
+                        {showNewProject && (
+                            <div className="col-span-2 bg-gray-50 p-4 rounded border">
+                                <p className="text-sm font-medium mb-3">New project details</p>
+                                <div>
+                                    <label className="text-sm text-gray-500 mb-1 block">Project Name</label>
+                                    <input
+                                        type="text"
+                                        placeholder="Website Redesign"
+                                        className="border p-2 rounded w-full"
+                                        onChange={(e) => setNewProjectData({ projectName: e.target.value })}
+                                    />
+                                </div>
+                            </div>
+                        )}
 
-                        <input
-                            type="date"
-                            className="border p-2 rounded"
-                        />
+                       
+                        <div>
+                            <label className="text-sm text-gray-500 mb-1 block">Cost</label>
+                            <input
+                                type="number"
+                                placeholder="5000"
+                                className="border p-2 rounded w-full"
+                                onChange={(e) => setProposalData({ ...proposalData, cost: e.target.value })}
+                            />
+                        </div>
 
-                        <input
-                            type="text"
-                            placeholder="Tags"
-                            className="border p-2 rounded"
-                        />
+                       
+                        <div>
+                            <label className="text-sm text-gray-500 mb-1 block">Status</label>
+                            <select
+                                className="border p-2 rounded w-full"
+                                onChange={(e) => setProposalData({ ...proposalData, status: e.target.value })}
+                            >
+                                <option value="Draft">Draft</option>
+                                <option value="Sent">Sent</option>
+                                <option value="Accepted">Accepted</option>
+                                <option value="Rejected">Rejected</option>
+                                <option value="Archived">Archived</option>
+                            </select>
+                        </div>
 
                     </div>
 
-                    {/* Description */}
-                    <textarea
-                        placeholder="Description..."
-                        className="w-full border p-2 rounded mt-4"
-                        rows="4"
-                    ></textarea>
+                    
+                    <div className="mt-4">
+                        <label className="text-sm text-gray-500 mb-1 block">Description</label>
+                        <textarea
+                            placeholder="Proposal description..."
+                            className="w-full border p-2 rounded"
+                            rows="4"
+                            onChange={(e) => setProposalData({ ...proposalData, description: e.target.value })}
+                        ></textarea>
+                    </div>
 
-                    {/* Upload Box */}
+                   
                     <div className="border-2 border-dashed p-6 mt-4 text-center rounded text-gray-500">
-                        Upload Proposal (PDF)
+                        <input
+                            type="file"
+                            accept=".pdf"
+                            onChange={(e) => setProposalData({ ...proposalData, document: e.target.files[0] })}
+                        />
                     </div>
 
-                    {/* Buttons */}
+                   
                     <div className="flex justify-end gap-3 mt-6">
-                        <button className="px-4 py-2 border rounded">
-                            Save Draft
-                        </button>
-
-                        <button className="px-4 py-2 bg-black text-white rounded">
+                        <button onClick={() => navigate(-1)} className="px-4 py-2 border rounded">Cancel</button>
+                        <button onClick={handleCreate} className="px-4 py-2 bg-black text-white rounded">
                             Create Proposal
                         </button>
                     </div>
 
                 </div>
-
             </div>
         </div>
     );

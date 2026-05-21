@@ -12,7 +12,7 @@ const commonAPI = async (httpMethod, url, reqBody, reqHeader) => {
         return res
     })
         .catch(err => {
-            return err
+            return err.response
         })
 }
 export default commonAPI
