@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import Sidebar from "../../components/Sidebar";
 import { useNavigate } from "react-router-dom";
 import { addclientAPI, addprojectAPI, createProposalAPI, getclientAPI, getProjectAPI } from "../../../services/allAPI";
-// import Select from 'react-select'
+import Select from 'react-select'
 function CreateProposal() {
     const navigate = useNavigate()
 
@@ -41,14 +41,14 @@ function CreateProposal() {
     // fetch clients
     const getClients = async () => {
         const response = await getclientAPI(reqHeader)
-        if (response.status === 200) 
+        if (response.status === 200)
             setClients(response.data)
     }
 
     // fetch projects
     const getProjects = async () => {
         const response = await getProjectAPI(reqHeader)
-        if (response.status === 200) 
+        if (response.status === 200)
             setProjects(response.data)
     }
 
@@ -58,26 +58,35 @@ function CreateProposal() {
     }, [])
 
     // handle client dropdown change
-    const handleClientChange = (e) => {
-        if (e.target.value === 'new') {
+    const handleClientChange = (selected) => {
+        if (selected.value === 'new') {
             setShowNewClient(true)
             setProposalData({ ...proposalData, clientId: '' })
         } else {
             setShowNewClient(false)
-            setProposalData({ ...proposalData, clientId: e.target.value })
+            setProposalData({ ...proposalData, clientId:selected.value })
         }
     }
 
     // handle project dropdown change
-    const handleProjectChange = (e) => {
-        if (e.target.value === 'new') {
+    const handleProjectChange = (selected) => {
+        if (selected.value === 'new') {
             setShowNewProject(true)
             setProposalData({ ...proposalData, projectId: '' })
         } else {
             setShowNewProject(false)
-            setProposalData({ ...proposalData, projectId: e.target.value })
+            setProposalData({ ...proposalData, projectId:selected.value })
         }
     }
+    //Dropdown search
+    const clientOptions = [ ...clients.map(client => ({ value: client._id, label: client.name })) ,
+    { value: 'new', label: '+ New Client' }
+
+    ]
+
+    const projectOptions = [ ...projects.map(project => ({ value:project._id,label:project.projectName})) ,
+    { value: 'new', label: '+ New Project' }
+    ]
 
     const handleCreate = async () => {
         let clientId = proposalData.clientId
@@ -152,31 +161,28 @@ function CreateProposal() {
                 <div className="bg-white p-6 rounded shadow">
                     <div className="grid grid-cols-2 gap-4">
 
-                        
+
                         <div>
                             <label className="text-sm text-gray-500 mb-1 block">Select Client</label>
-                            <select className="border p-2 rounded w-full" onChange={handleClientChange}>
-                                <option value="">Select client</option>
-                                {clients.map(client => (
-                                    <option key={client._id} value={client._id}>{client.name}</option>
-                                ))}
-                                <option value="new">+ New Client</option>
-                            </select>
+                            <Select
+                                options={clientOptions}
+                                placeholder="Search client"
+                                onChange={handleClientChange}
+                            />
                         </div>
 
-                        
+
                         <div>
                             <label className="text-sm text-gray-500 mb-1 block">Select Project</label>
-                            <select className="border p-2 rounded w-full" onChange={handleProjectChange}>
-                                <option value="">Select project</option>
-                                {projects.map(project => (
-                                    <option key={project._id} value={project._id}>{project.projectName}</option>
-                                ))}
-                                <option value="new">+ New Project</option>
-                            </select>
+
+                            <Select
+                                options={projectOptions}
+                                placeholder="Search project"
+                                onChange={handleProjectChange}
+                            />
                         </div>
 
-                        
+
                         {showNewClient && (
                             <div className="col-span-2 bg-gray-50 p-4 rounded border">
                                 <p className="text-sm font-medium mb-3">New client details</p>
@@ -218,7 +224,7 @@ function CreateProposal() {
                             </div>
                         )}
 
-                       
+
                         <div>
                             <label className="text-sm text-gray-500 mb-1 block">Cost</label>
                             <input
@@ -229,7 +235,7 @@ function CreateProposal() {
                             />
                         </div>
 
-                       
+
                         <div>
                             <label className="text-sm text-gray-500 mb-1 block">Status</label>
                             <select
@@ -246,7 +252,7 @@ function CreateProposal() {
 
                     </div>
 
-                    
+
                     <div className="mt-4">
                         <label className="text-sm text-gray-500 mb-1 block">Description</label>
                         <textarea
@@ -257,7 +263,7 @@ function CreateProposal() {
                         ></textarea>
                     </div>
 
-                   
+
                     <div className="border-2 border-dashed p-6 mt-4 text-center rounded text-gray-500">
                         <input
                             type="file"
@@ -266,7 +272,7 @@ function CreateProposal() {
                         />
                     </div>
 
-                   
+
                     <div className="flex justify-end gap-3 mt-6">
                         <button onClick={() => navigate(-1)} className="px-4 py-2 border rounded">Cancel</button>
                         <button onClick={handleCreate} className="px-4 py-2 bg-black text-white rounded">

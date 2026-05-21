@@ -18,6 +18,8 @@ function Dashboard() {
         getProposals()
     }, [])
 
+
+
     const totalProposals=proposalData.length
     const acceptedProposals=proposalData.filter((item)=>item.status==='Accepted').length
     const sentingProposals=proposalData.filter((item)=>item.status==='Sent').length
