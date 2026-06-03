@@ -38,7 +38,7 @@ function ViewProposalModal({ proposal, onClose }) {
                     </p>
                     {proposal?.documentUrl && (
                         <iframe
-                            src={`http://localhost:3000/${proposal.documentUrl.replace(/\\/g, '/')}`}
+                            src={`https://proposalmanagmentsystem-backend.onrender.com/${proposal.documentUrl.replace(/\\/g, '/')}`}
                             width="100%"
                             height="400px"
                             title="PDF Viewer"
