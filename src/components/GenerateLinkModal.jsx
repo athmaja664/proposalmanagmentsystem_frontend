@@ -76,7 +76,7 @@ function GenerateLinkModal({ onClose, proposalId }) {
                     <label className="text-sm text-gray-500 mb-1 block">Password for Client</label>
                     <input
                         type="text"
-                        placeholder="acme123"
+                        placeholder="Enter Password"
                         className="border p-2 rounded w-full"
                         onChange={(e) => setPassword(e.target.value)}
                     />

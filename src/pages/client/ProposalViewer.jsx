@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-
+import { serverURL } from "../../../services/serverURL";
 function ProposalViewer() {
     const location = useLocation();
     const navigate = useNavigate();
@@ -73,7 +73,9 @@ function ProposalViewer() {
                     <div className="bg-white rounded-lg shadow p-6 mb-4">
                         <h3 className="font-medium mb-3">Proposal Document</h3>
                         <iframe
-                            src={`https://proposalmanagmentsystem-backend.onrender.com/${proposal.documentUrl}`}
+                            //src={`https://proposalmanagmentsystem-backend.onrender.com/${proposal.documentUrl}`}
+                           
+                            src={`${serverURL}/${proposal.documentUrl}`}
                             width="100%"
                             height="500px"
                             className="border rounded"

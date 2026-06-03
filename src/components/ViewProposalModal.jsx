@@ -1,5 +1,5 @@
 import React from "react";
-
+import { serverURL } from "../../services/serverURL"
 function ViewProposalModal({ proposal, onClose }) {
 
     return (
@@ -38,7 +38,9 @@ function ViewProposalModal({ proposal, onClose }) {
                     </p>
                     {proposal?.documentUrl && (
                         <iframe
-                            src={`https://proposalmanagmentsystem-backend.onrender.com/${proposal.documentUrl.replace(/\\/g, '/')}`}
+                            // src={`https://proposalmanagmentsystem-backend.onrender.com/${proposal.documentUrl.replace(/\\/g, '/')}`}
+                            //src={`http://localhost:3000/${proposal.documentUrl.replace(/\\/g, '/')}`}
+                            src={`${serverURL}/${proposal.documentUrl.replace(/\\/g, '/')}`}
                             width="100%"
                             height="400px"
                             title="PDF Viewer"
