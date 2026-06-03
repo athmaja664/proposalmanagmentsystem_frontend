@@ -41,7 +41,7 @@ function Sidebar() {
     <div className="mt-auto p-5 border-t border-white/20">
       <p className="text-sm font-semibold">Admin</p>
       <p className="text-xs text-white/60 mt-1">
-        admin@company.com
+        admin@pms.com
       </p>
     </div>
 
