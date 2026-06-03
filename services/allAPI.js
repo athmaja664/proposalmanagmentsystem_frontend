@@ -47,3 +47,23 @@ export const updatedProposalAPI=async(id,reqBody,reqHeader)=>{
 export const deleteProposalAPI=async(id,reqHeader)=>{
   return await commonAPI('DELETE',`${serverURL}/api/deleteproposal/${id}`,{},reqHeader)
 }
+
+// GENERATE LINK
+export const generateLinkAPI = async (reqBody, reqHeader) => {
+    return await commonAPI('POST', `${serverURL}/api/links/generate`, reqBody, reqHeader)
+}
+
+// REVOKE LINK
+export const revokeLinkAPI = async (reqBody, reqHeader) => {
+    return await commonAPI('POST', `${serverURL}/api/links/revoke`, reqBody, reqHeader)
+}
+
+// GET PROPOSAL BY TOKEN
+export const getProposalByTokenAPI = async (token) => {
+    return await commonAPI('GET', `${serverURL}/api/public/proposal/${token}`, null, null)
+}
+
+// VERIFY PASSWORD
+export const verifyPasswordAPI = async (reqBody) => {
+    return await commonAPI('POST', `${serverURL}/api/public/verify-password`, reqBody, null)
+}

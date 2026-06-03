@@ -92,7 +92,7 @@ function CreateProposal() {
         let clientId = proposalData.clientId
         let projectId = proposalData.projectId
 
-        // if new client → save first
+        // if new client 
         if (showNewClient) {
             if (!newClientData.name || !newClientData.email) {
                 alert('Please fill client Form')
@@ -107,7 +107,7 @@ function CreateProposal() {
             }
         }
 
-        // if new project → save first
+        // if new project 
         if (showNewProject) {
             if (!newProjectData.projectName) {
                 alert('Please fill project name!')
@@ -188,19 +188,19 @@ function CreateProposal() {
                                 <p className="text-sm font-medium mb-3">New client details</p>
                                 <div className="grid grid-cols-2 gap-4">
                                     <div>
-                                        <label className="text-sm text-gray-500 mb-1 block">Client Name</label>
+                                        
                                         <input
                                             type="text"
-                                            placeholder="Acme Corp"
+                                            placeholder="Client Name"
                                             className="border p-2 rounded w-full"
                                             onChange={(e) => setNewClientData({ ...newClientData, name: e.target.value })}
                                         />
                                     </div>
                                     <div>
-                                        <label className="text-sm text-gray-500 mb-1 block">Client Email</label>
+                                        
                                         <input
                                             type="email"
-                                            placeholder="acme@gmail.com"
+                                            placeholder="Client Email"
                                             className="border p-2 rounded w-full"
                                             onChange={(e) => setNewClientData({ ...newClientData, email: e.target.value })}
                                         />
@@ -213,10 +213,9 @@ function CreateProposal() {
                             <div className="col-span-2 bg-gray-50 p-4 rounded border">
                                 <p className="text-sm font-medium mb-3">New project details</p>
                                 <div>
-                                    <label className="text-sm text-gray-500 mb-1 block">Project Name</label>
                                     <input
                                         type="text"
-                                        placeholder="Website Redesign"
+                                        placeholder="Project Name"
                                         className="border p-2 rounded w-full"
                                         onChange={(e) => setNewProjectData({ projectName: e.target.value })}
                                     />
@@ -229,7 +228,7 @@ function CreateProposal() {
                             <label className="text-sm text-gray-500 mb-1 block">Cost</label>
                             <input
                                 type="number"
-                                placeholder="5000"
+                                placeholder=""
                                 className="border p-2 rounded w-full"
                                 onChange={(e) => setProposalData({ ...proposalData, cost: e.target.value })}
                             />
@@ -256,7 +255,7 @@ function CreateProposal() {
                     <div className="mt-4">
                         <label className="text-sm text-gray-500 mb-1 block">Description</label>
                         <textarea
-                            placeholder="Proposal description..."
+                            placeholder=""
                             className="w-full border p-2 rounded"
                             rows="4"
                             onChange={(e) => setProposalData({ ...proposalData, description: e.target.value })}
@@ -275,7 +274,7 @@ function CreateProposal() {
 
                     <div className="flex justify-end gap-3 mt-6">
                         <button onClick={() => navigate(-1)} className="px-4 py-2 border rounded">Cancel</button>
-                        <button onClick={handleCreate} className="px-4 py-2 bg-black text-white rounded">
+                        <button  onClick={handleCreate} className="px-4 py-2 bg-black text-white rounded"style={{ background: "linear-gradient(145deg, #111111 0%, #333333 100%)" }}>
                             Create Proposal
                         </button>
                     </div>

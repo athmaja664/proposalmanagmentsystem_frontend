@@ -1,21 +1,28 @@
 import React, { useEffect, useState } from "react";
 import Sidebar from "../../components/Sidebar";
-import { useNavigate } from "react-router-dom";
 import { deleteProposalAPI, listProposalAPI } from "../../../services/allAPI";
 import EditProposalModal from "../../components/EditProposalModal";
 import ViewProposalModal from "../../components/ViewProposalModal";
-function Proposals() {
+import GenerateLinkModal from "../../components/GenerateLinkModal";
 
+function Proposals() {
+    //editmodal
     const [showModal, setShowModal] = useState(false)
+    //viewmodal
     const [showViewModal, setShowViewModal] = useState(false)
-    const navigate = useNavigate()
     const [searchKey, setSearchKey] = useState("")
     const [statusFilter, setStatusFilter] = useState("All Status")
+    //get
     const [proposals, setProposals] = useState([])
+    //edit
     const [selectedProposal, setSelectedProposal] = useState(null)
-    const token = localStorage.getItem('token')
-    const getProposals = async () => {
+    //generate link
+    const [showLinkModal, setShowLinkModal] = useState(false)
+    const [selectedProposalId, setSelectedProposalId] = useState('')
 
+    const token = localStorage.getItem('token')
+
+    const getProposals = async () => {
         const reqHeader = { Authorization: `Bearer ${token}` }
         const response = await listProposalAPI(reqHeader)
         if (response.status === 200) {
@@ -25,23 +32,18 @@ function Proposals() {
 
     const handleDelete = async (id) => {
         if (window.confirm("Are you sure you want to delete")) {
-
             const reqHeader = { Authorization: `Bearer ${token}` }
             const response = await deleteProposalAPI(id, reqHeader)
-            console.log(response);
             if (response.status === 200) {
                 alert('proposal deleted successfully')
                 getProposals()
             }
         }
-
     }
 
     useEffect(() => {
         getProposals()
     }, [])
-
-
 
     const filterProposal = proposals.filter((item) =>
         (
@@ -66,19 +68,15 @@ function Proposals() {
     return (
         <>
             <div className="flex min-h-screen bg-blue-50">
-
                 <Sidebar />
-
                 <div className="flex-1 p-8">
 
-                    {/* Header */}
                     <div className="flex justify-between items-center mb-8">
                         <h1 className="text-3xl font-bold text-gray-800 tracking-wide">
                             Proposals
                         </h1>
                     </div>
 
-                    {/* Filters */}
                     <div className="flex flex-wrap gap-4 mb-6">
                         <input
                             type="text"
@@ -98,7 +96,6 @@ function Proposals() {
                         </select>
                     </div>
 
-                    {/* Table */}
                     <div className="bg-white rounded-2xl shadow-sm overflow-hidden border border-gray-200">
                         <table className="w-full text-sm">
                             <thead className="bg-gray-100 border-b text-gray-700">
@@ -141,13 +138,26 @@ function Proposals() {
                                                 onClick={() => {
                                                     setSelectedProposal(item)
                                                     setShowModal(true)
-                                                }
-                                                }
-
-                                                className="text-gray-500 cursor-pointer hover:underline">
+                                                }}
+                                                className="text-gray-500 cursor-pointer hover:underline"
+                                            >
                                                 Edit
                                             </span>
-                                            <span onClick={() => handleDelete(item._id)} className="text-red-500 cursor-pointer hover:underline">Delete</span>
+                                            <span
+                                                onClick={() => handleDelete(item._id)}
+                                                className="text-red-500 cursor-pointer hover:underline"
+                                            >
+                                                Delete
+                                            </span>
+                                            <span
+                                                onClick={() => {
+                                                    setSelectedProposalId(item._id)
+                                                    setShowLinkModal(true)
+                                                }}
+                                                className="text-green-600 cursor-pointer hover:underline"
+                                            >
+                                                Generate Link
+                                            </span>
                                         </td>
                                     </tr>
                                 )) : (
@@ -164,23 +174,27 @@ function Proposals() {
                 </div>
             </div>
 
-            {/* Modal - outside main div */}
-           {/* Edit Modal */}
-{showModal && (
-    <EditProposalModal
-        onClose={() => setShowModal(false)}
-        proposal={selectedProposal}
-        getProposals={getProposals}
-    />
-)}
+            {showModal && (
+                <EditProposalModal
+                    onClose={() => setShowModal(false)}
+                    proposal={selectedProposal}
+                    getProposals={getProposals}
+                />
+            )}
 
-{/* View Modal */}
-{showViewModal && (
-    <ViewProposalModal
-        proposal={selectedProposal}
-        onClose={() => setShowViewModal(false)}
-    />
-)}
+            {showViewModal && (
+                <ViewProposalModal
+                    proposal={selectedProposal}
+                    onClose={() => setShowViewModal(false)}
+                />
+            )}
+
+            {showLinkModal && (
+                <GenerateLinkModal
+                    proposalId={selectedProposalId}
+                    onClose={() => setShowLinkModal(false)}
+                />
+            )}
         </>
     );
 }

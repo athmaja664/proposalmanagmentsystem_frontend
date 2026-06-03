@@ -36,7 +36,7 @@ function ViewProposalModal({ proposal, onClose }) {
                     <p>
                         <b>Created Date :</b> {proposal?.createdAt?.slice(0, 10)}
                     </p>
-                    {/* {proposal?.documentUrl && (
+                    {proposal?.documentUrl && (
                         <iframe
                             src={`http://localhost:3000/${proposal.documentUrl.replace(/\\/g, '/')}`}
                             width="100%"
@@ -44,7 +44,7 @@ function ViewProposalModal({ proposal, onClose }) {
                             title="PDF Viewer"
                             className="border rounded mt-4"
                         ></iframe>
-                    )} */}
+                    )}
 
                 </div>
 

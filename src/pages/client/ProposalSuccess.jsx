@@ -5,13 +5,13 @@ function ProposalSuccess() {
         <div className="min-h-screen bg-blue-50">
 
             {/* Topbar */}
-            <div className="bg-blue-700 px-6 py-3 flex items-center justify-between">
+            <div className="bg-black px-6 py-3 flex items-center justify-between">
                 <div className="flex items-center gap-2">
                     <div className="bg-white rounded-md p-1">
                         <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
                             <path
                                 d="M9 12h6M9 16h6M9 8h3M5 4h14a2 2 0 012 2v14a2 2 0 01-2 2H5a2 2 0 01-2-2V6a2 2 0 012-2z"
-                                stroke="#1d4ed8"
+                                stroke="#000000"
                                 strokeWidth="2"
                                 strokeLinecap="round"
                             />
