@@ -296,7 +296,8 @@ function ProposalViewer() {
                         <div className="bg-white rounded-lg shadow p-4 flex flex-col h-full">
                             <h3 className="font-medium mb-3">Proposal Document</h3>
                             <iframe
-                                src={`${serverURL}/${proposal.documentUrl}`}
+                                //src={`${serverURL}/${proposal.documentUrl}`}
+                                src={proposal.documentUrl}  
                                 width="100%"
                                 HEIGHT="600px"
                                 className="border rounded"

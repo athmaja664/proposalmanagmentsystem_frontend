@@ -35,7 +35,8 @@ function ViewProposalModal({ proposal, onClose }) {
                     <h3 className="text-sm font-medium text-gray-500 mb-2">Proposal Document</h3>
                     {proposal?.documentUrl ? (
                         <iframe
-                            src={`${serverURL}/${proposal.documentUrl.replace(/\\/g, '/')}`}
+                            // src={`${serverURL}/${proposal.documentUrl.replace(/\\/g, '/')}`}
+                            src={proposal.documentUrl.replace(/\\/g, '/')}
                             width="100%"
                             style={{ height: '520px' }}
                             title="PDF Viewer"
