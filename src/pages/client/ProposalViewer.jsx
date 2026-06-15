@@ -295,20 +295,15 @@ function ProposalViewer() {
                     {proposal.documentUrl ? (
                         <div className="bg-white rounded-lg shadow p-4 flex flex-col h-full">
                             <h3 className="font-medium mb-3">Proposal Document</h3>
-                            {/* <iframe
-                                //src={`${serverURL}/${proposal.documentUrl}`}
-                                src={proposal.documentUrl}  
+                            <iframe
+                                src={`${serverURL}/${proposal.documentUrl}`}
+                                //src={proposal.documentUrl}  
                                 width="100%"
                                 HEIGHT="600px"
                                 className="border rounded"
                                  //style={{ minHeight: 0 }}
-                            /> */}
-                            <iframe
-                                src={`https://docs.google.com/viewer?url=${encodeURIComponent(proposal.documentUrl)}&embedded=true`}
-                                width="100%"
-                                HEIGHT="600px"
-                                className="border rounded"
                             />
+                           
                         </div>
                     ) : (
                         <div className="bg-white rounded-lg shadow p-6 flex items-center justify-center h-FULL">
