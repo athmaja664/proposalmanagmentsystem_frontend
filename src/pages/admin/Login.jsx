@@ -111,7 +111,7 @@ function Login() {
 
           <button
             onClick={handleLogin}
-            className="w-full bg-black text-white py-2 rounded-full tracking-widest text-sm font-semibold hover:bg-gray-900 transition"
+            className="w-full bg-black text-white py-2 rounded-full tracking-widest text-sm font-semibold hover:bg-gray-900 transition cursor-pointer"
           >
             SIGN IN
           </button>

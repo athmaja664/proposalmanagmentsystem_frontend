@@ -115,10 +115,8 @@ function ProposalViewer() {
             <Topbar />
             <div className="max-w-7xl mx-auto px-4 py-8 flex gap-6 items-start">
 
-                {/* LEFT SIDE */}
-                <div className="w-[45%] flex flex-col gap-4">
+                <div className="w-[45%] flex flex-col gap-4 ">
 
-                    {/* Client & Project Details */}
                     <div className="bg-white rounded-lg shadow p-6">
                         <div className="flex justify-between items-start mb-4">
                             <div>
@@ -149,7 +147,7 @@ function ProposalViewer() {
                         </div>
                     </div>
 
-                    {/* Sign & Accept Box */}
+                
                     <div className="bg-white rounded-lg shadow p-6">
                         <h3 className="text-lg font-semibold mb-1">Sign & Accept This Proposal</h3>
                         <p className="text-gray-500 text-sm mb-5">
@@ -253,18 +251,6 @@ function ProposalViewer() {
                             </>
                         )}
 
-                        <div className="flex items-start gap-2 mb-5">
-                            <input
-                                type="checkbox"
-                                className="mt-1"
-                                checked={agreed}
-                                onChange={(e) => setAgreed(e.target.checked)}
-                            />
-                            <p className="text-sm text-gray-500">
-                                I have read and agree to the terms of this proposal and confirm my acceptance.
-                            </p>
-                        </div>
-
                         <div className="grid grid-cols-2 gap-3 mb-4">
                             <div className="mb-4">
                                 <label className="text-xs text-gray-500 mb-1 block">Your Decision</label>
@@ -279,7 +265,17 @@ function ProposalViewer() {
                                 </select>
                             </div>
                         </div>
-
+                            <div className="flex items-start gap-2 mb-5">
+                            <input
+                                type="checkbox"
+                                className="mt-1"
+                                checked={agreed}
+                                onChange={(e) => setAgreed(e.target.checked)}
+                            />
+                            <p className="text-sm text-gray-500">
+                                I have read and agree to the terms of this proposal and confirm my acceptance.
+                            </p>
+                        </div>
                         <button
                             onClick={handleSubmit}
                             className="w-full text-white py-2 rounded font-medium cursor-pointer transition-all active:scale-[0.98]"
@@ -295,19 +291,20 @@ function ProposalViewer() {
                     </div>
 
                 </div>
-                <div className="w-[55%] sticky top-4">
+                <div className="w-[55%] flex flex-col">
                     {proposal.documentUrl ? (
-                        <div className="bg-white rounded-lg shadow p-4">
+                        <div className="bg-white rounded-lg shadow p-4 flex flex-col h-full">
                             <h3 className="font-medium mb-3">Proposal Document</h3>
                             <iframe
                                 src={`${serverURL}/${proposal.documentUrl}`}
                                 width="100%"
-                                height="900px"
+                                HEIGHT="600px"
                                 className="border rounded"
+                                 //style={{ minHeight: 0 }}
                             />
                         </div>
                     ) : (
-                        <div className="bg-white rounded-lg shadow p-6 flex items-center justify-center h-64">
+                        <div className="bg-white rounded-lg shadow p-6 flex items-center justify-center h-FULL">
                             <p className="text-gray-400 text-sm">No document attached to this proposal.</p>
                         </div>
                     )}
