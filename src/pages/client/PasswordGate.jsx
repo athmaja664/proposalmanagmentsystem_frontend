@@ -98,7 +98,7 @@ function PasswordGate() {
                     />
                     <button
                         onClick={handleVerifyPassword}
-                        className="w-full text-white py-2 rounded font-medium" style={{ background: "linear-gradient(145deg, #111111 0%, #333333 100%)" }} 
+                        className="w-full text-white py-2 rounded font-medium cursor-pointer" style={{ background: "linear-gradient(145deg, #111111 0%, #333333 100%)" }} 
                     >
                         Unlock Proposal
                     </button>
