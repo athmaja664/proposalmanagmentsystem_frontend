@@ -36,8 +36,6 @@ function Register() {
                 <button className="w-full bg-black text-white py-2 rounded">
                     Register
                 </button>
-
-                {/* Navigation */}
                 <p className="text-sm text-gray-500 mt-4 text-center">
                     Already have an account?{" "}
                     <Link to="/" className="text-blue-700">

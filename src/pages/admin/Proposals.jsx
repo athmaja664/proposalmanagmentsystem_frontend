@@ -14,7 +14,7 @@ function Proposals() {
     const [statusFilter, setStatusFilter] = useState("All Status")
     //get
     const [proposals, setProposals] = useState([])
-    //edit
+    //edit/view
     const [selectedProposal, setSelectedProposal] = useState(null)
     //generate link
     const [showLinkModal, setShowLinkModal] = useState(false)
@@ -36,7 +36,7 @@ function Proposals() {
             const response = await deleteProposalAPI(id, reqHeader)
             if (response.status === 200) {
                 alert('proposal deleted successfully')
-                getProposals()
+                getProposals() //rf
             }
         }
     }
@@ -117,7 +117,7 @@ function Proposals() {
                                             {item.clientId.name}
                                         </td>
                                         <td className="px-6 py-4">
-                                            <span className={`${getStatusStyle(item.status)} px-3 py-1 rounded-full text-xs font-medium`}>
+                                            <span className={`${getStatusStyle(item.status)} px-3 py-1 rounded-full text-xs font-medium capitalize`}>
                                                 {item.status}
                                             </span>
                                         </td>
@@ -152,6 +152,7 @@ function Proposals() {
                                             <span
                                                 onClick={() => {
                                                     setSelectedProposalId(item._id)
+                                                    setSelectedProposal(item)  
                                                     setShowLinkModal(true)
                                                 }}
                                                 className="text-green-600 cursor-pointer hover:underline"
@@ -192,7 +193,12 @@ function Proposals() {
             {showLinkModal && (
                 <GenerateLinkModal
                     proposalId={selectedProposalId}
-                    onClose={() => setShowLinkModal(false)}
+                     proposalStatus={selectedProposal?.status}
+                     proposal={selectedProposal}
+                    onClose={() => {setShowLinkModal(false)
+                        getProposals()
+                    }}
+                    
                 />
             )}
         </>

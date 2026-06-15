@@ -1,19 +1,20 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { adminLoginAPI } from "../../../services/allAPI";
-
+import { RiFileList3Fill } from "react-icons/ri";
 function Login() {
   const navigate = useNavigate();
   const [adminData, setAdminData] = useState({ email: "", password: "" });
 
   const handleLogin = async () => {
+    ///const { email, password } = adminData;
     if (!adminData.email || !adminData.password) {
       alert("Please fill the Form");
       return;
     }
 
     try {
-      const response = await adminLoginAPI(adminData);
+      const response = await adminLoginAPI(adminData);//fn make api call
 
       if (response.status === 200) {
         localStorage.setItem("token", response.data.token);
@@ -29,40 +30,50 @@ function Login() {
   };
 
   return (
-    <div className="min-h-screen flex">
+  <div
+  className="min-h-screen flex items-center justify-center "
+  style={{ background: 'linear-gradient(135deg, #ffffff 0%, #f2eded 50%, #b9c2b9 100%)' }}
+>
+    <div className="w-[80%] h-[80vh] bg-white rounded-2xl shadow-2xl overflow-hidden flex">
 
-      {/* LEFT SIDE IMAGE PANEL */}
+    
       <div className="w-1/2 relative hidden md:block">
 
-        {/* Background Image */}
         <div
           className="absolute inset-0 bg-cover bg-center"
           style={{
+            //background: 'linear-gradient(135deg, #c9d6e8 0%, #d4b8d8 50%, #e8c4c4 100%)'
             backgroundImage: "url('/Images/login_background.jpg')",
+          
           }}
         />
 
-        {/* Dark overlay */}
         <div className="absolute inset-0 bg-black/60" />
 
-        {/* Text Content */}
-        <div className="relative z-10 h-full flex flex-col justify-center px-12 text-white">
+       
+  <div className="relative z-10 h-full flex flex-col px-12 text-white">
 
-          <h1 className="text-4xl font-bold mb-4">
-            Welcome Admin 👋
-          </h1>
+  
+  <div className="pt-8 flex items-center gap-2 text-xl font-bold">
+    <RiFileList3Fill />
+    <span>ProposalHub</span>
+  </div>
 
-          <p className="text-white/80 text-sm leading-6 max-w-md">
-            Manage your proposals, track updates, and control all system
-            activities from one place. Simple, fast, and secure dashboard
-            experience.
-          </p>
+  <div className="flex-1 flex flex-col justify-center">
+    <h1 className="text-3xl font-bold mb-4">
+      Manage proposals,<br/>close deals faster.
+    </h1>
+    <p className="text-white/80 text-sm leading-6 max-w-md">
+      Manage your proposals, track updates, and control all system
+      activities from one place. Simple, fast, and secure dashboard
+      experience.
+    </p>
+  </div>
 
-        </div>
+</div>
       </div>
 
-      {/* RIGHT SIDE LOGIN FORM */}
-     {/* RIGHT SIDE LOGIN FORM */}
+    
 <div className="w-full md:w-1/2 flex items-center justify-center bg-white">
 
         <div className="w-80">
@@ -74,19 +85,21 @@ function Login() {
       Sign in to manage your proposals
     </p>
 
-          {/* Email */}
-          <div className="flex items-center border border-gray-900 rounded-lg px-3 py-2 mb-4 bg-gray-50">
+        
+         <div className="flex items-center border border-gray-300 rounded-lg px-3 py-2 mb-4 bg-gray-50 focus-within:border-[#1d9e75] focus-within:bg-white transition-all">
+
             <span className="text-gray-400 mr-2">✉</span>
             <input
               type="email"
-              placeholder="admin@company.com"
+              placeholder="Admin Email"
               className="flex-1 bg-transparent outline-none text-sm text-gray-700"
               onChange={(e) => setAdminData({ ...adminData, email: e.target.value })}
             />
           </div>
 
-          {/* Password */}
-          <div className="flex items-center border border-gray-900 rounded-lg px-3 py-2 mb-6 bg-gray-50">
+     
+          <div className="flex items-center border border-gray-300 rounded-lg px-3 py-2 mb-4 bg-gray-50 focus-within:border-[#1d9e75] focus-within:bg-white transition-all">
+
             <span className="text-gray-400 mr-2">🔒</span>
             <input
               type="password"
@@ -96,14 +109,13 @@ function Login() {
             />
           </div>
 
-          {/* Button */}
           <button
             onClick={handleLogin}
             className="w-full bg-black text-white py-2 rounded-full tracking-widest text-sm font-semibold hover:bg-gray-900 transition"
           >
             SIGN IN
           </button>
-
+</div>
         </div>
 </div>
     </div>

@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import Sidebar from "../../components/Sidebar";
 import { Link, useNavigate } from "react-router-dom";
 import { listProposalAPI } from "../../../services/allAPI";
-import { GoProjectSymlink } from "react-icons/go";
+import { IoFileTrayFull } from "react-icons/io5";
 import { FcAcceptDatabase } from "react-icons/fc";
 import { HiPresentationChartLine } from "react-icons/hi";
 import { MdOutlineSmsFailed } from "react-icons/md";
@@ -11,8 +11,8 @@ function Dashboard() {
     const [proposalData, setProposalData] = useState([])
     const getProposals = async () => {
         const token = localStorage.getItem('token')
-        const reqHeader = { Authorization: `Bearer ${token}` }
-        const response = await listProposalAPI(reqHeader)
+        const reqHeader = { Authorization: `Bearer ${token}` }//crt tokn
+        const response = await listProposalAPI(reqHeader)//snt tkn to bc
         if (response.status === 200) {
             setProposalData(response.data)
         }
@@ -40,13 +40,9 @@ function Dashboard() {
         <>
             <div className="flex">
 
-                {/* Sidebar */}
                 <Sidebar />
 
-                {/* Main */}
                 <div className="flex-1 bg-blue-50 p-6">
-
-                    {/* Header */}
                     <div className="flex justify-between items-center">
                         <div>
                             <h1 className="text-2xl font-semibold">Dashboard</h1>
@@ -61,7 +57,6 @@ function Dashboard() {
                         </button>
                     </div>
 
-                    {/* Cards */}
                     <div className="grid grid-cols-4 gap-5 mt-8">
                         <div
                             className="group p-4 rounded shadow text-white flex justify-between items-end relative overflow-hidden"
@@ -75,7 +70,7 @@ function Dashboard() {
                                 </h2>
                             </div>
 
-                            <GoProjectSymlink className="text-4xl mb-1" />
+                            <IoFileTrayFull className="text-4xl mb-1" />
                         </div>
                         <div
                             className="group p-4 rounded shadow text-white flex justify-between items-end relative overflow-hidden"
@@ -122,7 +117,6 @@ function Dashboard() {
 
                     </div>
 
-                    {/* Table */}
                     <div className="bg-white mt-10 p-5 rounded shadow">
                         <h2 className="text-lg font-semibold mb-4">
                             Recent Proposals

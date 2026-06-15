@@ -10,7 +10,9 @@ function PasswordGate() {
     const [error, setError] = useState('');
     const [loading, setLoading] = useState(true);
 
-  
+     useEffect(() => {
+        checkLink();
+    }, []);
 
     const checkLink = async () => {
         const response = await getProposalByTokenAPI(token);
@@ -21,9 +23,7 @@ function PasswordGate() {
             setError(response?.data?.message || 'Invalid link');
         }
     };
-      useEffect(() => {
-        checkLink();
-    }, []);//only run when pg opens
+   
 
     const handleVerifyPassword = async () => {
         if (!password) {
@@ -32,7 +32,6 @@ function PasswordGate() {
         }
         const response = await verifyPasswordAPI({ token, password });
         if (response.status === 200) {
-            // Pass proposal data via navigation state to ProposalViewer
             console.log(response)
              navigate('/proposalview', { state: { proposal: response.data.proposal } });
         } else {
@@ -100,7 +99,7 @@ function PasswordGate() {
                     />
                     <button
                         onClick={handleVerifyPassword}
-                        className="w-full bg-black text-white py-2 rounded font-medium"
+                        className="w-full text-white py-2 rounded font-medium" style={{ background: "linear-gradient(145deg, #111111 0%, #333333 100%)" }} 
                     >
                         Unlock Proposal
                     </button>
