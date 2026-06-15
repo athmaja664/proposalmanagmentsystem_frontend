@@ -34,14 +34,21 @@ function ViewProposalModal({ proposal, onClose }) {
                 <div className="w-[55%] flex flex-col">
                     <h3 className="text-sm font-medium text-gray-500 mb-2">Proposal Document</h3>
                     {proposal?.documentUrl ? (
+                        // <iframe
+                        //     // src={`${serverURL}/${proposal.documentUrl.replace(/\\/g, '/')}`}
+                        //     src={proposal.documentUrl.replace(/\\/g, '/')}
+                        //     width="100%"
+                        //     style={{ height: '520px' }}
+                        //     title="PDF Viewer"
+                        //     className="border rounded"
+                        // />
                         <iframe
-                            // src={`${serverURL}/${proposal.documentUrl.replace(/\\/g, '/')}`}
-                            src={proposal.documentUrl.replace(/\\/g, '/')}
-                            width="100%"
-                            style={{ height: '520px' }}
-                            title="PDF Viewer"
-                            className="border rounded"
-                        />
+    src={`https://docs.google.com/viewer?url=${encodeURIComponent(proposal.documentUrl)}&embedded=true`}
+    width="100%"
+    style={{ height: '520px' }}
+    title="PDF Viewer"
+    className="border rounded"
+/>
                     ) : (
                         <div
                             className="border-2 border-dashed rounded flex items-center justify-center text-gray-400 text-sm"

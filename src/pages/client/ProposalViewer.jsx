@@ -147,7 +147,7 @@ function ProposalViewer() {
                         </div>
                     </div>
 
-                
+
                     <div className="bg-white rounded-lg shadow p-6">
                         <h3 className="text-lg font-semibold mb-1">Sign & Accept This Proposal</h3>
                         <p className="text-gray-500 text-sm mb-5">
@@ -265,7 +265,7 @@ function ProposalViewer() {
                                 </select>
                             </div>
                         </div>
-                            <div className="flex items-start gap-2 mb-5">
+                        <div className="flex items-start gap-2 mb-5">
                             <input
                                 type="checkbox"
                                 className="mt-1"
@@ -295,13 +295,19 @@ function ProposalViewer() {
                     {proposal.documentUrl ? (
                         <div className="bg-white rounded-lg shadow p-4 flex flex-col h-full">
                             <h3 className="font-medium mb-3">Proposal Document</h3>
-                            <iframe
+                            {/* <iframe
                                 //src={`${serverURL}/${proposal.documentUrl}`}
                                 src={proposal.documentUrl}  
                                 width="100%"
                                 HEIGHT="600px"
                                 className="border rounded"
                                  //style={{ minHeight: 0 }}
+                            /> */}
+                            <iframe
+                                src={`https://docs.google.com/viewer?url=${encodeURIComponent(proposal.documentUrl)}&embedded=true`}
+                                width="100%"
+                                HEIGHT="600px"
+                                className="border rounded"
                             />
                         </div>
                     ) : (
