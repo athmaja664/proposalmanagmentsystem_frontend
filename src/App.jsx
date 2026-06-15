@@ -12,9 +12,7 @@ import ProposalViewer from './pages/client/ProposalViewer';
 import ProtectedRoute from './components/ProtectedRoute';
 import PageNotFound from './pages/PageNotFound'
 import AuditLogs from './pages/admin/AuditLogs';
-//import Projects from './pages/admin/projects';
-// import AddClient from './pages/admin/AddClient';
-// import AddProject from './pages/admin/AddProject';
+
 
 function App() {
  const [isLoading,setIsLoading]=useState(false)
@@ -28,14 +26,10 @@ function App() {
   return (
     <>
       <Routes>
-        <Route path='dashboard' element={<Dashboard />} />
         <Route path='/' element={<Login />} />
-        {/* <Route path='addclient' element={<AddClient/>}/>
-       <Route path='addproject' element={<AddProject/>}/> */}
-        <Route path='proposals' element={<Proposals />} />
-        <Route path='createproposal' element={<CreateProposal />} />
-        {/* <Route path='projects' element={<Projects/>}></Route> */}
-        <Route path="/auditlogs" element={<AuditLogs/>}/>
+        <Route path='proposals' element={<ProtectedRoute><Proposals /></ProtectedRoute>} />
+        <Route path='createproposal' element={<ProtectedRoute><CreateProposal /></ProtectedRoute>} />
+        <Route path="/auditlogs" element={<ProtectedRoute><AuditLogs/></ProtectedRoute>}/>
         <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
         <Route path='*' element={<PageNotFound/>}/>
          <Route path='/view/:token' element={isLoading?<PasswordGate />:<Preloader/>} />
