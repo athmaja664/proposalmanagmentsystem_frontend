@@ -137,7 +137,7 @@ function GenerateLinkModal({ onClose, proposalId, proposal }) {
 
                 <button
                     onClick={handleGenerate}
-                    className="w-full bg-black text-white py-2 rounded font-medium mb-4"
+                    className="w-full bg-black text-white py-2 rounded font-medium mb-4  cursor-pointer"
                 >
                     Generate Link
 
@@ -162,7 +162,7 @@ function GenerateLinkModal({ onClose, proposalId, proposal }) {
                             />
                             <button
                                 onClick={handleCopyLink}
-                                className="bg-black text-white text-xs px-3 py-1 rounded"
+                                className="bg-black text-white text-xs px-3 py-1 rounded  cursor-pointer"
                             >
                                 Copy Link
                             </button>
@@ -177,7 +177,7 @@ function GenerateLinkModal({ onClose, proposalId, proposal }) {
                             />
                             <button
                                 onClick={handleCopyPassword}
-                                className="bg-black text-white text-xs px-3 py-1 rounded"
+                                className="bg-black text-white text-xs px-3 py-1 rounded  cursor-pointer"
                             >
                                 Copy Password
                             </button>
@@ -188,7 +188,7 @@ function GenerateLinkModal({ onClose, proposalId, proposal }) {
                             proposal?.status !== 'Rejected' && (
                                 <button
                                     onClick={handleMarkAsSent}
-                                    className="w-full bg-yellow-500 text-white py-2 rounded font-medium"
+                                    className="w-full bg-yellow-500 text-white py-2 rounded font-medium  cursor-pointer"
                                 >
                                     Mark as Sent
                                 </button>
@@ -203,14 +203,14 @@ function GenerateLinkModal({ onClose, proposalId, proposal }) {
                         {isRevoked ? (
                             <button
                                 onClick={handleUnrevoke}
-                                className="w-full border border-blue-500 text-blue-500 py-2 rounded font-medium"
+                                className="w-full border border-blue-500 text-blue-500 py-2 rounded font-medium cursor-pointer"
                             >
                                 Unrevoke Link
                             </button>
                         ) : (
                             <button
                                 onClick={handleRevoke}
-                                className="w-full border border-red-500 text-red-500 py-2 rounded font-medium"
+                                className="w-full border border-red-500 text-red-500 py-2 rounded font-medium cursor-pointer"
                             >
                                 Revoke Link
                             </button>
@@ -219,7 +219,7 @@ function GenerateLinkModal({ onClose, proposalId, proposal }) {
                         {(proposal?.status === 'Accepted' || proposal?.status === 'Rejected') && (
                             <button
                                 onClick={handleViewDecision}
-                                className={`w-full py-2 rounded font-medium border transition-all
+                                className={`w-full py-2 rounded font-medium cursor-pointer border transition-all
             ${proposal?.status === 'Rejected'
                                         ? 'border-red-500 text-red-600 hover:bg-red-50'
                                         : 'border-green-500 text-green-600 hover:bg-green-50'}`}
@@ -237,7 +237,7 @@ function GenerateLinkModal({ onClose, proposalId, proposal }) {
 
                 <button
                     onClick={onClose}
-                    className="w-full border py-2 rounded font-medium mt-3"
+                    className="w-full border py-2 rounded font-medium mt-3 cursor-pointer"
                 >
                     Close
                 </button>

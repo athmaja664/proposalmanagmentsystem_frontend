@@ -93,10 +93,10 @@ function EditProposalModal({ onClose, proposal, getProposals }) {
                 </div>
 
                 <div className="flex justify-end gap-3 mt-6">
-                    <button onClick={onClose} className="px-4 py-2 border rounded">
+                    <button onClick={onClose} className="px-4 py-2 border rounded  cursor-pointer">
                         Cancel
                     </button>
-                    <button onClick={handleUpdate} className="px-4 py-2 bg-black text-white rounded">
+                    <button onClick={handleUpdate} className="px-4 py-2 bg-black text-white rounded  cursor-pointer">
                         Update Proposal
                     </button>
                 </div>

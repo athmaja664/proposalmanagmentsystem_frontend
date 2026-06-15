@@ -53,7 +53,7 @@ function PasswordGate() {
         );
     }
 
-    // Invalid link state
+   
     if (error) {
         return (
             <div className="min-h-screen bg-blue-50">
@@ -73,7 +73,6 @@ function PasswordGate() {
         );
     }
 
-    // Password gate (valid link, not yet unlocked)
     return (
         <div className="min-h-screen bg-blue-50">
             <Topbar />

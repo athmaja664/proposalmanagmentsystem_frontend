@@ -50,7 +50,7 @@ function Dashboard() {
                         </div>
 
                         <button className="text-white px-4 py-2 rounded" >
-                            <Link to="/createproposal" className="text-white p-3 " style={{ background: "linear-gradient(145deg, #111111 0%, #333333 100%)" }} >
+                            <Link to="/createproposal" className="text-white p-3  " style={{ background: "linear-gradient(145deg, #111111 0%, #333333 100%)" }} >
                                 + New Proposal
                             </Link>
 
@@ -59,7 +59,7 @@ function Dashboard() {
 
                     <div className="grid grid-cols-4 gap-5 mt-8">
                         <div
-                            className="group p-4 rounded shadow text-white flex justify-between items-end relative overflow-hidden"
+                            className="group p-4 rounded shadow text-white flex justify-between items-end relative overflow-hidden  cursor-pointer"
                             style={{ background: "linear-gradient(145deg, #111111 0%, #333333 100%)" }}
                         >
                             <div className="relative z-10">
@@ -73,7 +73,7 @@ function Dashboard() {
                             <IoFileTrayFull className="text-4xl mb-1" />
                         </div>
                         <div
-                            className="group p-4 rounded shadow text-white flex justify-between items-end relative overflow-hidden"
+                            className="group p-4 rounded shadow text-white flex justify-between items-end relative overflow-hidden  cursor-pointer"
                             style={{ background: "linear-gradient(135deg, #2d2d2d 0%, #0a0a0a 100%)" }}
                         >
                             <div className="relative z-10">
@@ -86,7 +86,7 @@ function Dashboard() {
                             <FcAcceptDatabase className="text-4xl mb-1" />
                         </div>
                         <div
-                            className="group p-4 rounded shadow text-white flex justify-between items-end  relative overflow-hidden"
+                            className="group p-4 rounded shadow text-white flex justify-between items-end  relative overflow-hidden  cursor-pointer"
                             style={{ background: "linear-gradient(135deg, #1a1a1a 0%, #3d3d3d 100%)" }}
                         >
                             <div className="relative z-10">
@@ -100,7 +100,7 @@ function Dashboard() {
 
                         </div>
                         <div
-                            className="group p-4 rounded shadow text-white flex justify-between items-end  relative overflow-hidden"
+                            className="group p-4 rounded shadow text-white flex justify-between items-end  relative overflow-hidden  cursor-pointer"
                             style={{ background: "linear-gradient(135deg, #3d3d3d 0%, #1a1a1a 100%)" }}
                         >
                             <div className="relative z-10">

@@ -131,7 +131,10 @@ function ProposalSuccess() {
                     </p>
                     <button
                         onClick={generatePDF}
-                        className="mt-5 w-full bg-black text-white py-2 rounded font-medium text-sm" style={{ background: "linear-gradient(145deg, #111111 0%, #333333 100%)" }} 
+                        className="mt-5 w-full bg-black text-white py-2 rounded font-medium cursor-pointer text-sm" style={{ background: "linear-gradient(145deg, #111111 0%, #333333 100%)" }} 
+                        onMouseEnter={e => e.target.style.background = "linear-gradient(145deg, #333333 0%, #555555 100%)"}
+                            onMouseLeave={e => e.target.style.background = "linear-gradient(145deg, #111111 0%, #333333 100%)"}
+                        
                     >
                         Download PDF Certificate
                     </button>
