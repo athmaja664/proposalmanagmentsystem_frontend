@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import Sidebar from "../../components/Sidebar";
-import { getAuditLogsAPI } from "../../../services/allAPI";
+import { clearEmptyLogsAPI, getAuditLogsAPI } from "../../../services/allAPI";
 
 function AuditLogs() {
     const [logs, setLogs] = useState([])
@@ -51,53 +51,65 @@ function AuditLogs() {
         return matchSearchClient && matchSearchProject && matchPerformedBy && matchAction && matchDate
     })
 
+    const handleClearEmpty = async () => {
+    const confirm = window.confirm('Delete all logs with missing proposal data?')
+    if (confirm) {
+        const reqHeader = { Authorization: `Bearer ${token}` }
+        const response = await clearEmptyLogsAPI(reqHeader)
+        if (response.status === 200) {
+            alert('Cleared!')
+            getLogs() // refresh
+        }
+    }
+}
+
     return (
         <div className="flex min-h-screen bg-blue-50">
             <Sidebar />
             <div className="flex-1 p-8">
                 <h1 className="text-3xl font-bold text-gray-800 mb-8">Audit Logs</h1>
 
-                {/* Filters */}
-                <div className="flex flex-wrap gap-3 mb-6">
-                    {/* Search */}
-                    <input
-                        type="text"
-                        placeholder="Search "
-                        className="border border-gray-300 bg-white px-4 py-2 rounded-lg outline-none text-sm w-52"
-                        onChange={(e) => setSearchKey(e.target.value)}
-                    />
-
-                    {/* Performed By */}
-                    <select
-                        className="border border-gray-300 bg-white px-4 py-2 rounded-lg outline-none text-sm"
-                        onChange={(e) => setFilterPerformedBy(e.target.value)}
-                    >
-                        <option value="All">All Users</option>
-                        <option value="admin">Admin</option>
-                        <option value="client">Client</option>
-                    </select>
-
-                    {/* Action */}
-                    <select
-                        className="border border-gray-300 bg-white px-4 py-2 rounded-lg outline-none text-sm"
-                        onChange={(e) => setFilterAction(e.target.value)}
-                    >
-                        <option value="All">All Actions</option>
-                        <option value="proposal_created">Proposal Created</option>
-                        <option value="link_generated">Link Generated</option>
-                        <option value="link_revoked">Link Revoked</option>
-                        <option value="link_unrevoked">Link Unrevoked</option>
-                        <option value="client_accessed">Client Accessed</option>
-                        <option value="signature_submitted">Signature Submitted</option>
-                    </select>
-
-                    {/* Date */}
-                    <input
-                        type="date"
-                        className="border border-gray-300 bg-white px-4 py-2 rounded-lg outline-none text-sm"
-                        onChange={(e) => setFilterDate(e.target.value)}
-                    />
-                </div>
+              {/* Filters */}
+<div className="flex flex-wrap gap-3 mb-6">
+    <input
+        type="text"
+        placeholder="Search"
+        className="border border-gray-300 bg-white px-4 py-2 rounded-lg outline-none text-sm w-52"
+        onChange={(e) => setSearchKey(e.target.value)}
+    />
+    <select
+        className="border border-gray-300 bg-white px-4 py-2 rounded-lg outline-none text-sm"
+        onChange={(e) => setFilterPerformedBy(e.target.value)}
+    >
+        <option value="All">All Users</option>
+        <option value="admin">Admin</option>
+        <option value="client">Client</option>
+    </select>
+    <select
+        className="border border-gray-300 bg-white px-4 py-2 rounded-lg outline-none text-sm"
+        onChange={(e) => setFilterAction(e.target.value)}
+    >
+        <option value="All">All Actions</option>
+        <option value="proposal_created">Proposal Created</option>
+        <option value="link_generated">Link Generated</option>
+        <option value="link_revoked">Link Revoked</option>
+        <option value="link_unrevoked">Link Unrevoked</option>
+        <option value="client_accessed">Client Accessed</option>
+        <option value="signature_submitted">Signature Submitted</option>
+    </select>
+    <input
+        type="date"
+        className="border border-gray-300 bg-white px-4 py-2 rounded-lg outline-none text-sm"
+        onChange={(e) => setFilterDate(e.target.value)}
+    />
+    {/* Clear Empty Logs Button */}
+    <button
+        onClick={handleClearEmpty}
+        className="border border-gray-300 text-black px-4 py-2 rounded-lg text-sm bg-white"
+    >
+        Clear Empty Logs
+    </button>
+</div>
 
                 {/* Table */}
                 <div className="bg-white rounded-2xl shadow-sm overflow-hidden border border-gray-200">
@@ -139,6 +151,7 @@ function AuditLogs() {
                                     </td>
                                 </tr>
                             )}
+  
                         </tbody>
                     </table>
                 </div>

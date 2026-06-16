@@ -97,3 +97,8 @@ export const getSignatureByProposalAPI = async (proposalId, reqHeader) => {
 export const updateProposalStatusAPI=async(id,reqBody,reqHeader)=>{
   return await commonAPI('PUT',`${serverURL}/api/updatestatus/${id}`,reqBody,reqHeader)
 }
+
+// DELETE EMPTY LOGS
+export const clearEmptyLogsAPI = async (reqHeader) => {
+    return await commonAPI('DELETE', `${serverURL}/api/auditlogs/clear-empty`, {}, reqHeader)
+}

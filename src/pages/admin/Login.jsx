@@ -5,9 +5,10 @@ import { RiFileList3Fill } from "react-icons/ri";
 function Login() {
   const navigate = useNavigate();
   const [adminData, setAdminData] = useState({ email: "", password: "" });
-
+  const [loading, setLoading] = useState(false)
   const handleLogin = async () => {
     ///const { email, password } = adminData;
+    setLoading(true)
     if (!adminData.email || !adminData.password) {
       alert("Please fill the Form");
       return;
@@ -26,6 +27,7 @@ function Login() {
     } catch (err) {
       console.log(err);
       alert("Something went wrong");
+      setLoading(false)
     }
   };
 
@@ -42,7 +44,6 @@ function Login() {
         <div
           className="absolute inset-0 bg-cover bg-center"
           style={{
-            //background: 'linear-gradient(135deg, #c9d6e8 0%, #d4b8d8 50%, #e8c4c4 100%)'
             backgroundImage: "url('/Images/login_background.jpg')",
           
           }}
@@ -91,6 +92,8 @@ function Login() {
             <span className="text-gray-400 mr-2">✉</span>
             <input
               type="email"
+              autoComplete="email"
+               name="email"
               placeholder="Admin Email"
               className="flex-1 bg-transparent outline-none text-sm text-gray-700"
               onChange={(e) => setAdminData({ ...adminData, email: e.target.value })}
@@ -103,6 +106,8 @@ function Login() {
             <span className="text-gray-400 mr-2">🔒</span>
             <input
               type="password"
+               name="password"
+              autoComplete="password"
               placeholder="Password"
               className="flex-1 bg-transparent outline-none text-sm text-gray-700"
               onChange={(e) => setAdminData({ ...adminData, password: e.target.value })}
@@ -113,7 +118,7 @@ function Login() {
             onClick={handleLogin}
             className="w-full bg-black text-white py-2 rounded-full tracking-widest text-sm font-semibold hover:bg-gray-900 transition cursor-pointer"
           >
-            SIGN IN
+            {loading ? 'Connecting...' : 'Login'}
           </button>
 </div>
         </div>

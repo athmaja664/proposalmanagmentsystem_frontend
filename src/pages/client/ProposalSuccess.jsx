@@ -45,20 +45,28 @@ function ProposalSuccess() {
             y -= 30
         })
 
-        if (decision === 'Accepted' && signature?.signatureImageUrl) {
-            try {
-                const imgUrl = `${serverURL}/${signature.signatureImageUrl}`
-                const imgBytes = await fetch(imgUrl).then(r => r.arrayBuffer())
-                const img = await pdfDoc.embedPng(imgBytes)
-                page.drawText('Signature:', {
-                    x: 50, y, size: 12, font: boldFont, color: rgb(0.4, 0.4, 0.4)
-                })
-                y -= 20
-                page.drawImage(img, { x: 50, y: y - 80, width: 200, height: 80 })
-            } catch (e) {
-                console.log('signature image not loaded', e)
-            }
+       if (decision === 'Accepted' && signature?.signatureImageUrl) {
+    try {
+        const imgUrl = `${serverURL}/${signature.signatureImageUrl}`
+        const imgBytes = await fetch(imgUrl).then(r => r.arrayBuffer())
+        
+        let img
+        const isPNG = signature.signatureImageUrl.toLowerCase().endsWith('.png')
+        if (isPNG) {
+            img = await pdfDoc.embedPng(imgBytes)
+        } else {
+            img = await pdfDoc.embedJpg(imgBytes)
         }
+        
+        page.drawText('Signature:', {
+            x: 50, y, size: 12, font: boldFont, color: rgb(0.4, 0.4, 0.4)
+        })
+        y -= 20
+        page.drawImage(img, { x: 50, y: y - 80, width: 200, height: 80 })
+    } catch (e) {
+        console.log('signature image not loaded', e)
+    }
+}
 
         const pdfBytes = await pdfDoc.save()
         const blob = new Blob([pdfBytes], { type: 'application/pdf' })

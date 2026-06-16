@@ -113,9 +113,12 @@ function ProposalViewer() {
     return (
         <div className="min-h-screen bg-blue-50">
             <Topbar />
-            <div className="max-w-7xl mx-auto px-4 py-8 flex gap-6 items-start">
+            <div
+  className="max-w-[95vw] mx-auto px-4 py-8 flex gap-6 items-start"
+  style={{ height: "calc(100vh - 60px)" }}
+>
 
-                <div className="w-[45%] flex flex-col gap-4 ">
+               <div className="w-[45%] h-[84vh] overflow-y-auto pr-2">
 
                     <div className="bg-white rounded-lg shadow p-6">
                         <div className="flex justify-between items-start mb-4">
@@ -145,10 +148,8 @@ function ProposalViewer() {
                                 <span className="font-medium">₹{proposal.cost}</span>
                             </div>
                         </div>
-                    </div>
-
-
-                    <div className="bg-white rounded-lg shadow p-6">
+                        
+                    <div className="bg-white mt-5 p-6">
                         <h3 className="text-lg font-semibold mb-1">Sign & Accept This Proposal</h3>
                         <p className="text-gray-500 text-sm mb-5">
                             By signing you confirm acceptance of the terms in this proposal.
@@ -289,6 +290,9 @@ function ProposalViewer() {
                             Your IP address and timestamp will be recorded on submission.
                         </p>
                     </div>
+                    </div>
+
+
 
                 </div>
                 <div className="w-[55%] flex flex-col">
@@ -297,11 +301,10 @@ function ProposalViewer() {
                             <h3 className="font-medium mb-3">Proposal Document</h3>
                             <iframe
                                 src={`${serverURL}/${proposal.documentUrl}`}
-                                //src={proposal.documentUrl}  
                                 width="100%"
-                                HEIGHT="600px"
+                                height="550px"
                                 className="border rounded"
-                                 //style={{ minHeight: 0 }}
+                                 
                             />
                            
                         </div>

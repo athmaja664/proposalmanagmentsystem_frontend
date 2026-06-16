@@ -1,13 +1,27 @@
 import React from "react";
+import { useEffect, useState } from "react";
 import { serverURL } from "../../services/serverURL"
-
+import { getSignatureByProposalAPI } from "../../services/allAPI";
+import { useNavigate } from "react-router-dom";
 function ViewProposalModal({ proposal, onClose }) {
+    const navigate = useNavigate();
+    const[signature,setSignature]=useState(null)
+     useEffect(() => {
+        const getSignature = async () => {
+            const token = localStorage.getItem('token')
+            const reqHeader = { Authorization: `Bearer ${token}` }
+            const response = await getSignatureByProposalAPI(proposal._id, reqHeader)
+            if (response?.status === 200) {
+                setSignature(response.data)
+            }
+        }
+        getSignature()
+    }, [proposal._id])
     return (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
 
             <div className="bg-white p-6 rounded shadow w-[90vw] max-w-5xl flex gap-6">
 
-                {/* LEFT - Proposal Details */}
                 <div className="flex-1 flex flex-col">
                     <h2 className="text-2xl font-bold mb-5">Proposal Details</h2>
 
@@ -19,18 +33,82 @@ function ViewProposalModal({ proposal, onClose }) {
                         <p><b>Description :</b> {proposal?.description}</p>
                         <p><b>Created Date :</b> {proposal?.createdAt?.slice(0, 10)}</p>
                     </div>
+{/* Signature Section */}
+                    {signature ? (
+                        <div className="mt-5 border-t pt-4 space-y-3">
+                            <h3 className="font-semibold text-sm">Client Response</h3>
 
-                    <div className="flex justify-end mt-auto pt-6">
-                        <button
-                            onClick={onClose}
-                            className="bg-black text-white px-4 py-2 rounded  cursor-pointer"
-                        >
-                            Close
-                        </button>
-                    </div>
-                </div>
+                            <div className="flex items-center gap-2">
+                                <span className="text-sm text-gray-500">Decision :</span>
+                                <span className={`text-xs font-semibold px-3 py-1 rounded-full ${signature.decision === 'Accepted' ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}`}>
+                                    {signature.decision}
+                                </span>
+                            </div>
 
-                {/* RIGHT - PDF Preview */}
+                            <p className="text-sm text-gray-500">
+                                Signed on : {signature.signedAt?.slice(0, 10)}
+                            </p>
+
+                            {signature.decision === 'Accepted' && signature.signatureImageUrl && (
+                                <div>
+                                    <p className="text-sm text-gray-500 mb-1">Signature :</p>
+                                    <img
+                                        src={
+                                            signature.signatureImageUrl.startsWith('data:')
+                                                ? signature.signatureImageUrl
+                                                : `${serverURL}/${signature.signatureImageUrl}`
+                                        }
+                                        alt="Client Signature"
+                                        className="border rounded p-2 bg-gray-50 max-h-24 object-contain"
+                                    />
+                                </div>
+                            )}
+
+                            {/* {signature.certificateUrl && (
+                                <a
+                                    href={`${serverURL}/${signature.certificateUrl}`}
+                                    target="_blank"
+                                    rel="noreferrer"
+                                    download
+                                    className="inline-flex items-center gap-2 bg-black text-white text-sm px-4 py-2 rounded hover:bg-gray-800 transition-all"
+                                >
+                                    ⬇ Download Certificate
+                                </a>
+                            )} */}
+                        </div>
+                    ) : (
+                        <div className="mt-5 border-t pt-4">
+                            <p className="text-sm text-gray-400">No client response yet.</p>
+                        </div>
+                    )}
+    <br/><br/>
+    <div className="flex justify-end gap-3 pt-6">
+    {signature && (
+        <button
+            onClick={() =>
+                navigate("/success", {
+                    state: {
+                        proposal,
+                        decision: signature.decision,
+                        signature
+                    }
+                })
+            }
+            className="bg-black text-white px-6 py-2 rounded cursor-pointer min-w-[140px]"
+        >
+            View Response
+        </button>
+    )}
+
+    <button
+        onClick={onClose}
+        className="bg-black text-white px-6 py-2 rounded cursor-pointer min-w-[140px]"
+    >
+        Close
+    </button>
+</div>
+</div>
+                
                 <div className="w-[55%] flex flex-col">
                     <h3 className="text-sm font-medium text-gray-500 mb-2">Proposal Document</h3>
                     {proposal?.documentUrl ? (

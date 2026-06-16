@@ -1,14 +1,19 @@
 import React, { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
+import { Link,useNavigate  } from "react-router-dom";
 import { RiFileList3Fill } from "react-icons/ri";
+import { FiLogOut } from "react-icons/fi";
 function Sidebar() {
   const [admin, setAdmin] = useState(null);
-
+   const navigate = useNavigate();
   useEffect(() => {
     const data = JSON.parse(localStorage.getItem("admin"));
     setAdmin(data);
   }, []);
-
+const handleLogout=async()=>{
+  localStorage.removeItem('admin')
+  localStorage.removeItem('token')
+  navigate("/");
+}
   return (
     <div className="relative w-80 min-h-screen flex flex-col text-white">
       
@@ -47,13 +52,22 @@ function Sidebar() {
         </div>
 
         {admin && (
-          <div className="mt-auto p-5 border-t border-white/20">
-            <p className="text-sm font-semibold">{admin.name}</p>
-            <p className="text-xs text-white/60 mt-1">
-              {admin.email}
-            </p>
-          </div>
-        )}
+  
+  <div className="mt-auto p-5 border-t border-white/20 flex items-center justify-between">
+    <div>
+      <p className="text-sm font-semibold">{admin.name}</p>
+      <p className="text-xs text-white/60 mt-1">{admin.email}</p>
+    </div>
+    <button
+      onClick={handleLogout}
+      title="Logout"
+      className="flex items-center gap-1 text-white/60 hover:text-white transition-all text-sm"
+    >
+      <FiLogOut size={18} /> Logout
+    </button>
+  </div>
+)}
+      
       </div>
     </div>
   );

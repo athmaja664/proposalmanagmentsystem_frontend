@@ -1,5 +1,15 @@
 import axios from "axios";
-
+axios.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    if (error.response?.status === 401) {
+      localStorage.removeItem("admin");
+      localStorage.removeItem("token");
+      window.location.href = "/";
+    }
+    return Promise.reject(error);
+  }
+);
 const commonAPI = async (httpMethod, url, reqBody, reqHeader) => {
     const reqConfig = {
         method: httpMethod,
@@ -7,7 +17,7 @@ const commonAPI = async (httpMethod, url, reqBody, reqHeader) => {
         data: reqBody,
         headers: reqHeader
     }
-    //API call using axios
+   
     return await axios(reqConfig).then(res => {
         return res
     })
