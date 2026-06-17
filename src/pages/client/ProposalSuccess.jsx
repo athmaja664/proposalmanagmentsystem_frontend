@@ -50,8 +50,7 @@ if (decision === 'Accepted' && signature?.signatureImageUrl) {
         const imgBytes = await fetch(imgUrl).then(r => r.arrayBuffer())
         
         let img
-        const isPNG = signature.signatureImageUrl.toLowerCase().includes('.png') ||
-                      signature.signatureImageUrl.includes('image/upload')
+        const isPNG = signature.signatureImageUrl.toLowerCase().endsWith('.png')
         if (isPNG) {
             img = await pdfDoc.embedPng(imgBytes)
         } else {
