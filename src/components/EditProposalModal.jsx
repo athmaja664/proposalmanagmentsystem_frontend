@@ -8,6 +8,7 @@ function EditProposalModal({ onClose, proposal, getProposals }) {
         description: proposal?.description || '',
         document: ''
     })
+
     const handleUpdate = async () => {
         const token = localStorage.getItem('token')
         const reqHeader = {
@@ -22,83 +23,129 @@ function EditProposalModal({ onClose, proposal, getProposals }) {
             formData.append('document', proposalData.document)
         }
         const response = await updatedProposalAPI(proposal._id, formData, reqHeader)
-        console.log(response);
         if (response.status === 200) {
             alert('Proposal Updated')
-           getProposals()//ref
-            onClose()//m-c
-        }
-        else {
+            getProposals()
+            onClose()
+        } else {
             alert(response.data.message)
         }
     }
+
     return (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-            <div className="bg-white p-6 rounded shadow w-2/4">
+            <div className="bg-white p-6 rounded shadow w-[90vw] max-w-5xl flex gap-6">
 
-                <h2 className="text-xl font-semibold mb-4">Edit Proposal</h2>
+                {/* LEFT - Form */}
+                <div className="flex-1 flex flex-col">
+                    <h2 className="text-xl font-semibold mb-4">Edit Proposal</h2>
 
-                <div className="grid grid-cols-2 gap-4">
-                    <div>
-                        <label className="text-sm text-gray-500 mb-1 block">Client</label>
-                        <input
-                            type="text"
-                            value={proposal?.clientId?.name}
-                            disabled
-                            className="border p-2 rounded w-full bg-gray-100"
+                    <div className="grid grid-cols-2 gap-4">
+                        <div>
+                            <label className="text-sm text-gray-500 mb-1 block">Client</label>
+                            <input
+                                type="text"
+                                value={proposal?.clientId?.name}
+                                disabled
+                                className="border p-2 rounded w-full bg-gray-100"
+                            />
+                        </div>
+                        <div>
+                            <label className="text-sm text-gray-500 mb-1 block">Project</label>
+                            <input
+                                type="text"
+                                value={proposal?.projectId?.projectName}
+                                disabled
+                                className="border p-2 rounded w-full bg-gray-100"
+                            />
+                        </div>
+                        <div>
+                            <label className="text-sm text-gray-500 mb-1 block">Cost</label>
+                            <input
+                                type="number"
+                                placeholder="5000"
+                                value={proposalData.cost}
+                                className="border p-2 rounded w-full"
+                                onChange={(e) => setProposalData({ ...proposalData, cost: e.target.value })}
+                            />
+                        </div>
+                        <div>
+                            <label className="text-sm text-gray-500 mb-1 block">Status</label>
+                            <select
+                                value={proposalData.status}
+                                className="border p-2 rounded w-full"
+                                onChange={(e) => setProposalData({ ...proposalData, status: e.target.value })}
+                            >
+                                <option value="Draft">Draft</option>
+                                <option value="Sent">Sent</option>
+                                <option value="Accepted">Accepted</option>
+                                <option value="Rejected">Rejected</option>
+                                <option value="Archived">Archived</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div className="mt-4">
+                        <label className="text-sm text-gray-500 mb-1 block">Description</label>
+                        <textarea
+                            placeholder="Proposal description"
+                            value={proposalData.description}
+                            className="w-full border p-2 rounded"
+                            rows="3"
+                            onChange={(e) => setProposalData({ ...proposalData, description: e.target.value })}
                         />
                     </div>
-                    <div>
-                        <label className="text-sm text-gray-500 mb-1 block">Project</label>
-                        <input
-                            type="text"
-                            value={proposal?.projectId?.projectName}
-                            disabled
-                            className="border p-2 rounded w-full bg-gray-100"
-                        />
+
+                    <div className="mt-4">
+                        <label className="text-sm text-gray-500 mb-1 block">Replace Document (optional)</label>
+                        <div className="border-2 border-dashed p-4 text-center rounded text-gray-500">
+                            <input
+                                type="file"
+                                accept=".pdf"
+                                onChange={(e) => setProposalData({ ...proposalData, document: e.target.files[0] })}
+                            />
+                        </div>
+                        {proposalData.document && (
+                            <p className="text-xs text-green-600 mt-1">{proposalData.document.name} selected</p>
+                        )}
                     </div>
-                    <div>
-                        <label className="text-sm text-gray-500 mb-1 block">Cost</label>
-                        <input type="number" placeholder="5000"
-                            value={proposalData.cost} className="border p-2 rounded w-full"
-                            onChange={(e) => setProposalData({ ...proposalData, cost: e.target.value })} />
-                    </div>
-                    <div>
-                        <label className="text-sm text-gray-500 mb-1 block">Status</label>
-                        <select value={proposalData.status}    className="border p-2 rounded w-full"
-                            onChange={(e) => setProposalData({ ...proposalData, status: e.target.value })}>
-                            <option value="Draft">Draft</option>
-                            <option value="Sent">Sent</option>
-                            <option value="Accepted">Accepted</option>
-                            <option value="Rejected">Rejected</option>
-                            <option value="Archived">Archived</option>
-                        </select>
+
+                    <div className="flex justify-end gap-3 mt-6">
+                        <button onClick={onClose} className="px-4 py-2 border rounded cursor-pointer">
+                            Cancel
+                        </button>
+                        <button onClick={handleUpdate} className="px-4 py-2 bg-black text-white rounded cursor-pointer">
+                            Update Proposal
+                        </button>
                     </div>
                 </div>
 
-                <div className="mt-4">
-                    <label className="text-sm text-gray-500 mb-1 block">Description</label>
-                    <textarea
-                        placeholder="Proposal description"
-                        value={proposalData.description}
-                        className="w-full border p-2 rounded"
-                        rows="3"
-                        onChange={(e) => setProposalData({ ...proposalData, description: e.target.value })}
-                    ></textarea>
-                </div>
-
-                <div className="border-2 border-dashed p-4 mt-4 text-center rounded text-gray-500">
-                    <input type="file" accept=".pdf"
-                        onChange={(e) => setProposalData({ ...proposalData, document: e.target.files[0] })} />
-                </div>
-
-                <div className="flex justify-end gap-3 mt-6">
-                    <button onClick={onClose} className="px-4 py-2 border rounded  cursor-pointer">
-                        Cancel
-                    </button>
-                    <button onClick={handleUpdate} className="px-4 py-2 bg-black text-white rounded  cursor-pointer">
-                        Update Proposal
-                    </button>
+                {/* RIGHT - PDF Preview */}
+                <div className="w-[45%] flex flex-col">
+                    <h3 className="text-sm font-medium text-gray-500 mb-2">Current Document</h3>
+                    {proposal?.documentUrl ? (
+                        // <iframe
+                        //     src={proposal.documentUrl}
+                        //     width="100%"
+                        //     className="border rounded flex-1"
+                        //     style={{ height: '520px' }}
+                        //     title="PDF Preview"
+                        // />
+                        <iframe
+    src={`https://docs.google.com/viewer?url=${encodeURIComponent(proposal.documentUrl)}&embedded=true`}
+    width="100%"
+    style={{ height: '520px' }}
+    title="PDF Viewer"
+    className="border rounded"
+/>
+                    ) : (
+                        <div
+                            className="border-2 border-dashed rounded flex items-center justify-center text-gray-400 text-sm"
+                            style={{ height: '520px' }}
+                        >
+                            No document uploaded
+                        </div>
+                    )}
                 </div>
 
             </div>

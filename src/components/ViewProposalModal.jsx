@@ -50,19 +50,26 @@ function ViewProposalModal({ proposal, onClose }) {
                             </p>
 
                             {signature.decision === 'Accepted' && signature.signatureImageUrl && (
-                                <div>
-                                    <p className="text-sm text-gray-500 mb-1">Signature :</p>
-                                    <img
-                                        src={
-                                            signature.signatureImageUrl.startsWith('data:')
-                                                ? signature.signatureImageUrl
-                                                : `${serverURL}/${signature.signatureImageUrl}`
-                                        }
-                                        alt="Client Signature"
-                                        className="border rounded p-2 bg-gray-50 max-h-24 object-contain"
-                                    />
-                                </div>
-                            )}
+    <div>
+        <p className="text-sm text-gray-500 mb-1">Signature :</p>
+        <img
+            src={signature.signatureImageUrl}
+            alt="Client Signature"
+            className="border rounded p-2 bg-gray-50 max-h-24 object-contain"
+        />
+    </div>
+)}
+{signature.certificateUrl && (
+    <a
+        href={signature.certificateUrl}
+        target="_blank"
+        rel="noreferrer"
+        download
+        className="inline-flex items-center gap-2 bg-black text-white text-sm px-4 py-2 rounded hover:bg-gray-800 transition-all"
+    >
+        ⬇ Download Certificate
+    </a>
+)}
 
                             {/* {signature.certificateUrl && (
                                 <a
@@ -112,14 +119,21 @@ function ViewProposalModal({ proposal, onClose }) {
                 <div className="w-[55%] flex flex-col">
                     <h3 className="text-sm font-medium text-gray-500 mb-2">Proposal Document</h3>
                     {proposal?.documentUrl ? (
+                        // <iframe
+                        //     //src={`${serverURL}/${proposal.documentUrl.replace(/\\/g, '/')}`}
+                        //      src={proposal.documentUrl.replace(/\\/g, '/')}
+                        //     width="100%"
+                        //     style={{ height: '520px' }}
+                        //     title="PDF Viewer"
+                        //     className="border rounded"
+                        // />
                         <iframe
-                            src={`${serverURL}/${proposal.documentUrl.replace(/\\/g, '/')}`}
-                            // src={proposal.documentUrl.replace(/\\/g, '/')}
-                            width="100%"
-                            style={{ height: '520px' }}
-                            title="PDF Viewer"
-                            className="border rounded"
-                        />
+    src={`https://docs.google.com/viewer?url=${encodeURIComponent(proposal.documentUrl)}&embedded=true`}
+    width="100%"
+    style={{ height: '520px' }}
+    title="PDF Viewer"
+    className="border rounded"
+/>
                       
                     ) : (
                         <div

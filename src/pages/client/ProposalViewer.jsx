@@ -299,13 +299,21 @@ function ProposalViewer() {
                     {proposal.documentUrl ? (
                         <div className="bg-white rounded-lg shadow p-4 flex flex-col h-full">
                             <h3 className="font-medium mb-3">Proposal Document</h3>
-                            <iframe
-                                src={`${serverURL}/${proposal.documentUrl}`}
+                            {/* <iframe
+                                //src={`${serverURL}/${proposal.documentUrl}`}
+                                src={proposal.documentUrl}
                                 width="100%"
                                 height="550px"
                                 className="border rounded"
                                  
-                            />
+                            /> */}
+                            <iframe
+    src={`https://docs.google.com/viewer?url=${encodeURIComponent(proposal.documentUrl)}&embedded=true`}
+    width="100%"
+    style={{ height: '520px' }}
+    title="PDF Viewer"
+    className="border rounded"
+/>
                            
                         </div>
                     ) : (
