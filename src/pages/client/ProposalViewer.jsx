@@ -307,8 +307,15 @@ function ProposalViewer() {
                                 className="border rounded"
                                  
                             /> */}
-                            <iframe
+                            {/* <iframe
     src={`https://docs.google.com/viewer?url=${encodeURIComponent(proposal.documentUrl)}&embedded=true`}
+    width="100%"
+    style={{ height: '520px' }}
+    title="PDF Viewer"
+    className="border rounded"
+/> */}
+<iframe
+    src={proposal.documentUrl}
     width="100%"
     style={{ height: '520px' }}
     title="PDF Viewer"
