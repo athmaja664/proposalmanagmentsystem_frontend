@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { adminLoginAPI } from "../../../services/allAPI";
 import { RiFileList3Fill } from "react-icons/ri";
 import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai";
+import toast, { Toaster } from 'react-hot-toast'
 function Login() {
   const navigate = useNavigate();
   const [adminData, setAdminData] = useState({ email: "", password: "" });
@@ -10,21 +11,28 @@ function Login() {
   const [showPassword, setShowPassword] = useState(false)
   const handleLogin = async () => {
     ///const { email, password } = adminData;
-    setLoading(true)
+    
     if (!adminData.email || !adminData.password) {
-      alert("Please fill the Form");
+      toast.error("Please fill the Form");
       return;
     }
-
+setLoading(true)
     try {
-      const response = await adminLoginAPI(adminData);//fn make api call
-
+      const response = await adminLoginAPI(adminData);
+      console.log('response',response); 
+      
       if (response.status === 200) {
         localStorage.setItem("token", response.data.token);
         localStorage.setItem("admin", JSON.stringify(response.data.user));
-        navigate("/dashboard");
+        toast.success('Welcome Admin')
+
+        setTimeout(() => {
+          navigate("/dashboard")
+        }, 1000)
       } else {
-        alert("Invalid Credential");
+        toast.error(response.data.message || 'Invalid email or password')
+    //setLoading(false)
+      
       }
     } catch (err) {
       console.log(err);
@@ -38,6 +46,7 @@ function Login() {
       className="min-h-screen flex items-center justify-center "
       style={{ background: 'linear-gradient(135deg, #ffffff 0%, #f2eded 50%, #b9c2b9 100%)' }}
     >
+      <Toaster position="top-center" />
       <div className="w-[80%] h-[80vh] bg-white rounded-2xl shadow-2xl overflow-hidden flex">
 
 
@@ -93,7 +102,7 @@ function Login() {
 
               <span className="text-gray-400 mr-2">✉</span>
               <input
-                type="email"
+                type="text"
                 autoComplete="email"
                 name="email"
                 placeholder="Admin Email"
@@ -109,12 +118,12 @@ function Login() {
               <input
                 type={showPassword ? "text" : "password"}
                 name="password"
-                autoComplete="password"
+                autoComplete="off"
                 placeholder="Password"
                 className="flex-1 bg-transparent outline-none text-sm text-gray-700"
                 onChange={(e) => setAdminData({ ...adminData, password: e.target.value })}
               />
-              <span                                          
+              <span
                 className="text-gray-400 ml-2 cursor-pointer"
                 onClick={() => setShowPassword(!showPassword)}
               >

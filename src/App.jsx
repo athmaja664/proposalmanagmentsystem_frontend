@@ -12,7 +12,7 @@ import ProposalViewer from './pages/client/ProposalViewer';
 import ProtectedRoute from './components/ProtectedRoute';
 import PageNotFound from './pages/PageNotFound'
 import AuditLogs from './pages/admin/AuditLogs';
-
+import { Toaster } from 'react-hot-toast'
 
 function App() {
  const [isLoading,setIsLoading]=useState(false)
@@ -25,6 +25,7 @@ function App() {
 
   return (
     <>
+      <Toaster position="top-center" />
       <Routes>
         <Route path='/' element={<Login />} />
         <Route path='proposals' element={<ProtectedRoute><Proposals /></ProtectedRoute>} />

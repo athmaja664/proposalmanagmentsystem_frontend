@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { updatedProposalAPI } from "../../services/allAPI";
-
+import toast, { Toaster } from 'react-hot-toast'
 function EditProposalModal({ onClose, proposal, getProposals }) {
     const [proposalData, setProposalData] = useState({
         cost: proposal?.cost || '',
@@ -24,16 +24,19 @@ function EditProposalModal({ onClose, proposal, getProposals }) {
         }
         const response = await updatedProposalAPI(proposal._id, formData, reqHeader)
         if (response.status === 200) {
-            alert('Proposal Updated')
+            toast.success('Proposal Updated')
             getProposals()
-            onClose()
+            setTimeout(() => {
+        onClose()
+    }, 1000)
         } else {
-            alert(response.data.message)
+            toast.error(response.data.message)
         }
     }
 
     return (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+            <Toaster position="top-center" />
             <div className="bg-white p-6 rounded shadow w-[90vw] max-w-5xl flex gap-6">
 
                 {/* LEFT - Form */}

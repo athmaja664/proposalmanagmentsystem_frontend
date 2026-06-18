@@ -58,53 +58,57 @@ function ProposalViewer() {
         return canvas.toDataURL('image/png')
     }
 
-    const handleSubmit = async () => {
-         setLoading(true)
-        if (!agreed || !decision) {
-            alert('Please fill all fields and accept the terms.')
-            return
+   const handleSubmit = async () => {
+    if (!agreed || !decision) {
+        alert('Please fill all fields and accept the terms.')
+        return
+    }
+
+    const confirmed = window.confirm("Are you sure you want to submit your decision?")
+    if (!confirmed) return
+
+    setLoading(true)
+    try {
+        let response
+
+        if (decision === 'Rejected') {
+            response = await submitSignatureAPI(
+                { proposalId: proposal._id, decision: 'Rejected' },
+                { 'Content-Type': 'application/json' }
+            )
+        } else if (signatureMethod === 'draw') {
+            const signatureBase64 = getSignatureImage()
+            response = await submitSignatureAPI(
+                { proposalId: proposal._id, decision, signatureMethod, signatureBase64 },
+                { 'Content-Type': 'application/json' }
+            )
+        } else if (signatureMethod === 'upload') {
+            const fd = new FormData()
+            fd.append('proposalId', proposal._id)
+            fd.append('decision', decision)
+            fd.append('signatureMethod', 'upload')
+            fd.append('signatureFile', uploadedFile)
+            response = await submitSignatureAPI(fd, null)
         }
-
-        try {
-            let response
-
-            if (decision === 'Rejected') {
-                response = await submitSignatureAPI(
-                    { proposalId: proposal._id, decision: 'Rejected' },
-                    { 'Content-Type': 'application/json' }
-                )
-            } else if (signatureMethod === 'draw') {
-                const signatureBase64 = getSignatureImage()
-                response = await submitSignatureAPI(
-                    { proposalId: proposal._id, decision, signatureMethod, signatureBase64 },
-                    { 'Content-Type': 'application/json' }
-                )
-            } else if (signatureMethod === 'upload') {
-                const fd = new FormData()
-                fd.append('proposalId', proposal._id)
-                fd.append('decision', decision)
-                fd.append('signatureMethod', 'upload')
-                fd.append('signatureFile', uploadedFile)
-                response = await submitSignatureAPI(fd, null)
-            }
-            console.log(response);
-            if (response.status === 201 || response.status === 200) {
-                navigate('/success', {
-                    state: {
-                        proposal,
-                        decision,
-                        signature: response.data.newSignature
-                    }
-                })
-            } else {
-                alert(response.data.error)
-            }
-
-        } catch (err) {
-            alert('Something went wrong.')
+        console.log(response);
+        if (response.status === 201 || response.status === 200) {
+            navigate('/success', {
+                state: {
+                    proposal,
+                    decision,
+                    signature: response.data.newSignature
+                }
+            })
+        } else {
+            alert(response.data.error)
             setLoading(false)
         }
+
+    } catch (err) {
+        alert('Something went wrong.')
+        setLoading(false)
     }
+}
     if (!proposal) {
         return (
             <div className="min-h-screen bg-blue-50 flex items-center justify-center">

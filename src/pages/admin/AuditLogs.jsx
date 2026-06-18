@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import Sidebar from "../../components/Sidebar";
 import { clearEmptyLogsAPI, getAuditLogsAPI } from "../../../services/allAPI";
 import Spinner from "../../components/Spinner";
+import toast, { Toaster } from 'react-hot-toast'
 function AuditLogs() {
     const [logs, setLogs] = useState([])
     const [searchKey, setSearchKey] = useState('')
@@ -59,7 +60,7 @@ function AuditLogs() {
         const reqHeader = { Authorization: `Bearer ${token}` }
         const response = await clearEmptyLogsAPI(reqHeader)
         if (response.status === 200) {
-            alert('Cleared!')
+            toast.success('Cleared!')
             getLogs() // refresh
         }
     }
@@ -67,6 +68,7 @@ function AuditLogs() {
 if (loading) return <Spinner />
     return (
         <div className="flex min-h-screen bg-blue-50">
+             <Toaster position="top-center" />
             <Sidebar />
             <div className="flex-1 p-8">
                 <h1 className="text-3xl font-bold text-gray-800 mb-8">Audit Logs</h1>

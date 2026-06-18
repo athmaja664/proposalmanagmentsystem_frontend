@@ -3,6 +3,7 @@ import Sidebar from "../../components/Sidebar";
 import { useNavigate } from "react-router-dom";
 import { addclientAPI, addprojectAPI, createProposalAPI, getclientAPI, getProjectAPI } from "../../../services/allAPI";
 import Select from 'react-select'
+import toast, { Toaster } from 'react-hot-toast'
 function CreateProposal() {
     const navigate = useNavigate()
 
@@ -96,14 +97,14 @@ function CreateProposal() {
         // if new client 
         if (showNewClient) {
             if (!newClientData.name || !newClientData.email) {
-                alert('Please fill client Form')
+                toast.error('Please fill client Form')
                 return
             }
             const clientRes = await addclientAPI(newClientData, reqHeader)
             if (clientRes.status === 200) {
                 clientId = clientRes.data.newClient._id
             } else {
-                alert(clientRes.data.message)
+                toast.error(clientRes.data.message)
                 return
             }
         }
@@ -111,20 +112,20 @@ function CreateProposal() {
         // if new project 
         if (showNewProject) {
             if (!newProjectData.projectName) {
-                alert('Please fill project name!')
+                toast.error('Please fill project name!')
                 return
             }
             const projectRes = await addprojectAPI({ projectName: newProjectData.projectName, clientId }, reqHeader)
             if (projectRes.status === 200) {
                 projectId = projectRes.data.newProject._id
             } else {
-                alert(projectRes.data.message)
+                toast.error(projectRes.data.message)
                 return
             }
         }
        setLoading(true)
         if (!clientId || !projectId || !proposalData.description) {
-            alert('Please fill all required fields!')
+            toast.error('Please fill all required fields!')
             return
         }
 
@@ -145,16 +146,17 @@ function CreateProposal() {
         console.log(response)
 
         if (response.status === 200) {
-            alert('Proposal Created Successfully!')
+            toast.success('Proposal Created Successfully!')
             navigate('/proposals')
         } else {
-            alert(response.data.message)
+            toast.error(response.data.message)
             setLoading(false)
         }
     }
 
     return (
         <div className="flex">
+             <Toaster position="top-center" />
             <Sidebar />
             <div className="flex-1 bg-blue-50 p-6">
                 <h1 className="text-2xl font-semibold mb-2">Create Proposal</h1>

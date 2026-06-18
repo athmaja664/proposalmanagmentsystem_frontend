@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { generateLinkAPI, getLinkByProposalAPI, getSignatureByProposalAPI, revokeLinkAPI, unrevokeLinkAPI, updateProposalStatusAPI  } from "../../services/allAPI";
 import { useNavigate } from 'react-router-dom'
-
+import toast, { Toaster } from 'react-hot-toast'
 function GenerateLinkModal({ onClose, proposalId, proposal }) {
     const navigate = useNavigate()
     const [password, setPassword] = useState('')
@@ -30,7 +30,7 @@ function GenerateLinkModal({ onClose, proposalId, proposal }) {
 
     const handleGenerate = async () => {
         if (!password || !expiryDate) {
-            alert('Please fill all fields!')
+            toast.error('Please fill all fields!')
             return
         }
         const response = await generateLinkAPI({ proposalId, password, expiryDate }, reqHeader)
@@ -50,29 +50,32 @@ function GenerateLinkModal({ onClose, proposalId, proposal }) {
                 }
             }
         } else {
-            alert(response?.data?.message || 'Something went wrong!')
+            toast.error(response?.data?.message || 'Something went wrong!')
         }
     }
     const handleRevoke = async () => {
-        const confirm = window.confirm('Are you sure you want to revoke this link?')
-        if (confirm) {
+        
             const response = await revokeLinkAPI({ token: generatedToken }, reqHeader)
+            console.log(response);
             if (response.status === 200) {
-                alert('Link Revoked Successfully!')
+                toast.success('Link Revoked Successfully!')
                 setIsRevoked(true)
+                
+                
+            }else{
+                toast.error('Failed to revoke link')
             }
-        }
     }
 
     const handleUnrevoke = async () => {
-        const confirm = window.confirm('Are you sure you wnat to unrevoke this link?')
-        if (confirm) {
+        
             const response = await unrevokeLinkAPI({ token: generatedToken }, reqHeader)
             if (response.status === 200) {
-                alert('Link UnRevoked Successfullyy!')
+                toast.success('Link UnRevoked Successfullyy!')
                 setIsRevoked(false)
+            }else{
+            toast.error('Failed to unrevoke link')
             }
-        }
     }
     const handleViewDecision = async () => {
         const response = await getSignatureByProposalAPI(proposalId, reqHeader)
@@ -92,22 +95,25 @@ function GenerateLinkModal({ onClose, proposalId, proposal }) {
     const handleMarkAsSent = async () => {
         const response = await updateProposalStatusAPI(proposalId, { status: 'Sent' }, reqHeader)
         if (response.status === 200) {
-            alert('Status Updated successfully')
+            toast.success('Status Updated successfully')
             setIsSent(true)
         }
     }
     const handleCopyLink = () => {
         navigator.clipboard.writeText(generatedLink)
-        alert('Link Copied!')
+        toast.success('Link Copied!')
     }
 
     const handleCopyPassword = () => {
         navigator.clipboard.writeText(password)
-        alert('Password Copied!')
+        toast.success('Password Copied!')
     }
 
     return (
+        <>
+        <Toaster position="top-center" />
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+            
             <div className="bg-white rounded-lg shadow p-8 w-full max-w-md">
 
                 <h2 className="text-xl font-semibold mb-1">Generate Access Link</h2>
@@ -244,7 +250,9 @@ function GenerateLinkModal({ onClose, proposalId, proposal }) {
 
             </div>
         </div>
+        </>
     )
+    
 }
 
 export default GenerateLinkModal

@@ -2,7 +2,7 @@ import React from "react";
 import { useLocation } from "react-router-dom";
 import { serverURL } from "../../../services/serverURL";
 import { PDFDocument, rgb, StandardFonts } from 'pdf-lib'
-
+import toast, { Toaster } from 'react-hot-toast'
 function ProposalSuccess() {
     const location = useLocation()
     const { proposal, decision, signature } = location.state || {}
@@ -12,6 +12,7 @@ function ProposalSuccess() {
         : new Date().toLocaleString()
 
     const generatePDF = async () => {
+        try{
         const pdfDoc = await PDFDocument.create()
         const page = pdfDoc.addPage([595, 842])
         const font = await pdfDoc.embedFont(StandardFonts.Helvetica)
@@ -66,28 +67,7 @@ if (decision === 'Accepted' && signature?.signatureImageUrl) {
         console.log('signature image not loaded', e)
     }
 }
-//        if (decision === 'Accepted' && signature?.signatureImageUrl) {
-//     try {
-//         const imgUrl = `${serverURL}/${signature.signatureImageUrl}`
-//         const imgBytes = await fetch(imgUrl).then(r => r.arrayBuffer())
-        
-//         let img
-//         const isPNG = signature.signatureImageUrl.toLowerCase().endsWith('.png')
-//         if (isPNG) {
-//             img = await pdfDoc.embedPng(imgBytes)
-//         } else {
-//             img = await pdfDoc.embedJpg(imgBytes)
-//         }
-        
-//         page.drawText('Signature:', {
-//             x: 50, y, size: 12, font: boldFont, color: rgb(0.4, 0.4, 0.4)
-//         })
-//         y -= 20
-//         page.drawImage(img, { x: 50, y: y - 80, width: 200, height: 80 })
-//     } catch (e) {
-//         console.log('signature image not loaded', e)
-//     }
-// }
+
 
         const pdfBytes = await pdfDoc.save()
         const blob = new Blob([pdfBytes], { type: 'application/pdf' })
@@ -95,10 +75,16 @@ if (decision === 'Accepted' && signature?.signatureImageUrl) {
         link.href = URL.createObjectURL(blob)
         link.download = `proposal_${signature?.clientName}_${decision}.pdf`
         link.click()
+         toast.success('Downloaded')
+    }catch(err){
+           console.log('PDF generation failed', err)
+        toast.error('Failed to generate PDF certificate')
     }
+}
 
     return (
         <div className="min-h-screen bg-blue-50">
+            <Toaster position="top-center" />
             <div className="bg-black px-6 py-3 flex items-center justify-between">
                 <div className="flex items-center gap-2">
                     <div className="bg-white rounded-md p-1">

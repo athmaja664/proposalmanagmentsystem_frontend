@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { getProposalByTokenAPI, verifyPasswordAPI } from "../../../services/allAPI";
 import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai";
-
+import toast, { Toaster } from 'react-hot-toast'
 function PasswordGate() {
     const { token } = useParams();
     const navigate = useNavigate();
@@ -27,25 +27,59 @@ function PasswordGate() {
         }
     };
 
+    // const handleVerifyPassword = async () => {
+    //     if (!password) {
+    //         toast.error("Please fill the Form");
+    //         return;
+    //     }
+    //     setVerify(true);
+    //     const response = await verifyPasswordAPI({ token, password });
+    //     if (response.status === 200) {
+    //         toast.success('Welcome')
+    //         setTimeout(()=>{
+    //                navigate('/proposalview', { state: { proposal: response.data.proposal } });
+    //         },1000)
+         
+    //     } else {
+    //          toast.error(response.data.message || 'Invalid email or password')
+    //         setVerify(false);
+    //     }
+    // };
     const handleVerifyPassword = async () => {
-        if (!password) {
-            alert('Please enter password!');
-            return;
-        }
-        setVerify(true);
-        const response = await verifyPasswordAPI({ token, password });
-        if (response.status === 200) {
-            navigate('/proposalview', { state: { proposal: response.data.proposal } });
+    if (!password) {
+        toast.error("Please fill the Form");
+        return;
+    }
+    setVerify(true);
+    const response = await verifyPasswordAPI({ token, password });
+    if (response.status === 200) {
+        if (response.data.alreadyResponded) {
+            toast.success('Welcome back')
+            setTimeout(() => {
+                navigate('/success', {
+                    state: {
+                        proposal: response.data.proposal,
+                        decision: response.data.decision
+                    }
+                });
+            }, 1000)
         } else {
-            alert(response?.data?.message || 'Incorrect password');
-            setVerify(false);
+            toast.success('Welcome')
+            setTimeout(() => {
+                navigate('/proposalview', { state: { proposal: response.data.proposal } });
+            }, 1000)
         }
-    };
+    } else {
+        toast.error(response.data.message || 'Invalid email or password')
+        setVerify(false);
+    }
+};
 
     // Loading state
     if (loading) {
         return (
             <div className="min-h-screen bg-blue-50">
+                <Toaster position="top-center" />
                 <Topbar />
                 <div className="flex items-center justify-center py-16 px-4">
                     <div className="bg-white rounded-lg shadow p-8 w-full max-w-sm text-center">
@@ -61,6 +95,7 @@ function PasswordGate() {
     if (error) {
         return (
             <div className="min-h-screen bg-blue-50">
+                   <Toaster position="top-center" />
                 <Topbar />
                 <div className="flex items-center justify-center py-16 px-4">
                     <div className="bg-white rounded-lg shadow p-8 w-full max-w-sm text-center">
@@ -80,6 +115,7 @@ function PasswordGate() {
     // Main state
     return (
         <div className="min-h-screen bg-blue-50">
+            <Toaster position="top-center" />
             <Topbar />
             <div className="flex items-center justify-center py-16 px-4">
                 <div className="bg-white rounded-lg shadow p-8 w-full max-w-sm text-center">

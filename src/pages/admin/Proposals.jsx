@@ -5,6 +5,7 @@ import EditProposalModal from "../../components/EditProposalModal";
 import ViewProposalModal from "../../components/ViewProposalModal";
 import GenerateLinkModal from "../../components/GenerateLinkModal";
 import Spinner from "../../components/Spinner";
+import toast, { Toaster } from 'react-hot-toast'
 function Proposals() {
     //editmodal
     const [showModal, setShowModal] = useState(false)
@@ -20,9 +21,10 @@ function Proposals() {
     const [showLinkModal, setShowLinkModal] = useState(false)
     const [selectedProposalId, setSelectedProposalId] = useState('')
     //spinnner
-    const[loading,setLoading]=useState(true)
+    const [loading, setLoading] = useState(true)
     const token = localStorage.getItem('token')
-
+    //dlt notf
+    const [confirmDeleteId, setConfirmDeleteId] = useState(null)
     const getProposals = async () => {
         const reqHeader = { Authorization: `Bearer ${token}` }
         const response = await listProposalAPI(reqHeader)
@@ -32,21 +34,24 @@ function Proposals() {
         setLoading(false)
     }
 
-    const handleDelete = async (id) => {
-        if (window.confirm("Are you sure you want to delete")) {
-            const reqHeader = { Authorization: `Bearer ${token}` }
-            const response = await deleteProposalAPI(id, reqHeader)
-            if (response.status === 200) {
-                alert('proposal deleted successfully')
-                getProposals() //rf
-            }
-        }
-    }
+   
+const handleDelete = async (id) => {
+    const reqHeader = { Authorization: `Bearer ${token}` }
 
-    useEffect(() => {
+    const response = await deleteProposalAPI(id, reqHeader)
+
+    if (response.status === 200) {
+        setConfirmDeleteId(null)
+        toast.success('Proposal deleted successfully')
         getProposals()
-    }, [])
+    } else {
+        toast.error('Failed to delete proposal')
+    }
+}
 
+useEffect(() => {
+    getProposals()
+}, [])
     const filterProposal = proposals.filter((item) =>
         (
             item.projectId.projectName.toLowerCase().includes(searchKey.toLowerCase()) ||
@@ -66,10 +71,11 @@ function Proposals() {
         if (status === 'Rejected') return 'bg-red-100 text-red-700'
         if (status === 'Archived') return 'bg-blue-100 text-blue-700'
     }
-if (loading) return <Spinner />
+    if (loading) return <Spinner />
     return (
         <>
             <div className="flex min-h-screen bg-blue-50">
+                <Toaster position="top-center" /> 
                 <Sidebar />
                 <div className="flex-1 p-8">
 
@@ -145,16 +151,39 @@ if (loading) return <Spinner />
                                             >
                                                 Edit
                                             </span>
-                                            <span
+                                            {/* <span
                                                 onClick={() => handleDelete(item._id)}
                                                 className="text-red-500 cursor-pointer hover:underline"
                                             >
                                                 Delete
-                                            </span>
+                                            </span> */}
+                                            {confirmDeleteId === item._id ? (
+                                                <span className="inline-flex gap-2">
+                                                    <span
+                                                        onClick={() => handleDelete(item._id)}
+                                                        className="text-red-500 cursor-pointer text-xs border border-red-300 px-2 py-0.5 rounded hover:bg-red-50"
+                                                    >
+                                                        Yes, delete
+                                                    </span>
+                                                    <span
+                                                        onClick={() => setConfirmDeleteId(null)}
+                                                        className="text-gray-500 cursor-pointer text-xs border border-gray-300 px-2 py-0.5 rounded hover:bg-gray-50"
+                                                    >
+                                                        Cancel
+                                                    </span>
+                                                </span>
+                                            ) : (
+                                                <span
+                                                    onClick={() => setConfirmDeleteId(item._id)}
+                                                    className="text-red-500 cursor-pointer hover:underline"
+                                                >
+                                                    Delete
+                                                </span>
+                                            )}
                                             <span
                                                 onClick={() => {
                                                     setSelectedProposalId(item._id)
-                                                    setSelectedProposal(item)  
+                                                    setSelectedProposal(item)
                                                     setShowLinkModal(true)
                                                 }}
                                                 className="text-green-600 cursor-pointer hover:underline"
@@ -165,8 +194,15 @@ if (loading) return <Spinner />
                                     </tr>
                                 )) : (
                                     <tr>
-                                        <td colSpan='5' className="text-center py-4">
-                                            No proposals found
+                                        <td colSpan='5' className="text-center py-10">
+                                            <div className="flex flex-col items-center gap-2 text-gray-400">
+                                                <svg width="40" height="40" fill="none" viewBox="0 0 24 24">
+                                                    <path d="M9 12h6M9 16h6M9 8h3M5 4h14a2 2 0 012 2v14a2 2 0 01-2 2H5a2 2 0 01-2-2V6a2 2 0 012-2z"
+                                                        stroke="#9ca3af" strokeWidth="1.5" strokeLinecap="round" />
+                                                </svg>
+                                                <p className="text-sm font-medium">No proposals found</p>
+                                                <p className="text-xs">Create your first proposal to get started</p>
+                                            </div>
                                         </td>
                                     </tr>
                                 )}
@@ -195,12 +231,13 @@ if (loading) return <Spinner />
             {showLinkModal && (
                 <GenerateLinkModal
                     proposalId={selectedProposalId}
-                     proposalStatus={selectedProposal?.status}
-                     proposal={selectedProposal}
-                    onClose={() => {setShowLinkModal(false)
+                    proposalStatus={selectedProposal?.status}
+                    proposal={selectedProposal}
+                    onClose={() => {
+                        setShowLinkModal(false)
                         getProposals()
                     }}
-                    
+
                 />
             )}
         </>
