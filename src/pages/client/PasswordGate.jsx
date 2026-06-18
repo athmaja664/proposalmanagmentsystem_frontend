@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from "react";
-import { Link, useParams, useNavigate } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import { getProposalByTokenAPI, verifyPasswordAPI } from "../../../services/allAPI";
 import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai";
+
 function PasswordGate() {
     const { token } = useParams();
     const navigate = useNavigate();
@@ -9,7 +10,8 @@ function PasswordGate() {
     const [password, setPassword] = useState('');
     const [error, setError] = useState('');
     const [loading, setLoading] = useState(true);
-    const [showPassword, setShowPassword] = useState(false)
+    const [verify, setVerify] = useState(false);
+    const [showPassword, setShowPassword] = useState(false);
 
     useEffect(() => {
         checkLink();
@@ -25,18 +27,18 @@ function PasswordGate() {
         }
     };
 
-
     const handleVerifyPassword = async () => {
         if (!password) {
             alert('Please enter password!');
             return;
         }
+        setVerify(true);
         const response = await verifyPasswordAPI({ token, password });
         if (response.status === 200) {
-            console.log(response)
             navigate('/proposalview', { state: { proposal: response.data.proposal } });
         } else {
             alert(response?.data?.message || 'Incorrect password');
+            setVerify(false);
         }
     };
 
@@ -47,14 +49,15 @@ function PasswordGate() {
                 <Topbar />
                 <div className="flex items-center justify-center py-16 px-4">
                     <div className="bg-white rounded-lg shadow p-8 w-full max-w-sm text-center">
-                        <p className="text-gray-500 text-sm">Loading...</p>
+                        <div className="w-8 h-8 border-4 border-gray-200 border-t-black rounded-full animate-spin mx-auto mb-3"></div>
+                        <p className="text-gray-500 text-sm">Checking link...</p>
                     </div>
                 </div>
             </div>
         );
     }
 
-
+    // Error state
     if (error) {
         return (
             <div className="min-h-screen bg-blue-50">
@@ -74,6 +77,7 @@ function PasswordGate() {
         );
     }
 
+    // Main state
     return (
         <div className="min-h-screen bg-blue-50">
             <Topbar />
@@ -107,9 +111,11 @@ function PasswordGate() {
                     </div>
                     <button
                         onClick={handleVerifyPassword}
-                        className="w-full text-white py-2 rounded font-medium cursor-pointer" style={{ background: "linear-gradient(145deg, #111111 0%, #333333 100%)" }}
+                        disabled={verify}
+                        className="w-full text-white py-2 rounded font-medium cursor-pointer disabled:opacity-60"
+                        style={{ background: "linear-gradient(145deg, #111111 0%, #333333 100%)" }}
                     >
-                        Unlock Proposal
+                        {verify ? 'Unlocking...' : 'Unlock Proposal'}
                     </button>
                     <p className="text-gray-400 text-xs mt-4">No account required to view this proposal</p>
                 </div>
