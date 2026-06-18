@@ -6,9 +6,12 @@ import { IoFileTrayFull } from "react-icons/io5";
 import { FcAcceptDatabase } from "react-icons/fc";
 import { HiPresentationChartLine } from "react-icons/hi";
 import { MdOutlineSmsFailed } from "react-icons/md";
+import Spinner from "../../components/Spinner";
 function Dashboard() {
     const navigate = useNavigate()
     const [proposalData, setProposalData] = useState([])
+    //spinner
+    const [loading,setLoading]=useState(true)
     const getProposals = async () => {
         const token = localStorage.getItem('token')
         const reqHeader = { Authorization: `Bearer ${token}` }//crt tokn
@@ -16,6 +19,7 @@ function Dashboard() {
         if (response.status === 200) {
             setProposalData(response.data)
         }
+        setLoading(false)
     }
     useEffect(() => {
         getProposals()
@@ -36,6 +40,7 @@ function Dashboard() {
         if (status === 'Rejected') return 'bg-red-100 text-red-700'
         if (status === 'Archived') return 'bg-blue-100 text-blue-700'
     }
+    if (loading) return <Spinner />
     return (
         <>
             <div className="flex">

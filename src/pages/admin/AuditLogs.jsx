@@ -1,14 +1,15 @@
 import React, { useEffect, useState } from "react";
 import Sidebar from "../../components/Sidebar";
 import { clearEmptyLogsAPI, getAuditLogsAPI } from "../../../services/allAPI";
-
+import Spinner from "../../components/Spinner";
 function AuditLogs() {
     const [logs, setLogs] = useState([])
     const [searchKey, setSearchKey] = useState('')
     const [filterPerformedBy, setFilterPerformedBy] = useState('All')
     const [filterAction, setFilterAction] = useState('All')
     const [filterDate, setFilterDate] = useState('')
-
+    //spinner
+    const[loading,setLoading]=useState(true)
     const token = localStorage.getItem('token')
 
     const getLogs = async () => {
@@ -17,6 +18,7 @@ function AuditLogs() {
         if (response.status === 200) {
             setLogs(response.data)
         }
+        setLoading(false)
     }
 
     useEffect(() => {
@@ -62,7 +64,7 @@ function AuditLogs() {
         }
     }
 }
-
+if (loading) return <Spinner />
     return (
         <div className="flex min-h-screen bg-blue-50">
             <Sidebar />

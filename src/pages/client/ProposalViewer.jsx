@@ -19,6 +19,7 @@ function ProposalViewer() {
     const canvasRef = useRef(null)
     const fileInputRef = useRef(null)
     const [uploadedFile, setUploadedFile] = useState(null)
+    const [loading, setLoading] = useState(false)
 
     const startDrawing = (e) => {
         const canvas = canvasRef.current
@@ -58,6 +59,7 @@ function ProposalViewer() {
     }
 
     const handleSubmit = async () => {
+         setLoading(true)
         if (!agreed || !decision) {
             alert('Please fill all fields and accept the terms.')
             return
@@ -100,6 +102,7 @@ function ProposalViewer() {
 
         } catch (err) {
             alert('Something went wrong.')
+            setLoading(false)
         }
     }
     if (!proposal) {
@@ -284,7 +287,8 @@ function ProposalViewer() {
                             onMouseEnter={e => e.target.style.background = "linear-gradient(145deg, #333333 0%, #555555 100%)"}
                             onMouseLeave={e => e.target.style.background = "linear-gradient(145deg, #111111 0%, #333333 100%)"}
                         >
-                            Submit Report
+                            {loading ? 'Submitting...' : 'Submit Report'}
+                            
                         </button>
                         <p className="text-gray-400 text-xs text-center mt-3">
                             Your IP address and timestamp will be recorded on submission.

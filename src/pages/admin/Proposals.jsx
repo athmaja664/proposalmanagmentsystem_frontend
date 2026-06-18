@@ -4,7 +4,7 @@ import { deleteProposalAPI, listProposalAPI } from "../../../services/allAPI";
 import EditProposalModal from "../../components/EditProposalModal";
 import ViewProposalModal from "../../components/ViewProposalModal";
 import GenerateLinkModal from "../../components/GenerateLinkModal";
-
+import Spinner from "../../components/Spinner";
 function Proposals() {
     //editmodal
     const [showModal, setShowModal] = useState(false)
@@ -19,7 +19,8 @@ function Proposals() {
     //generate link
     const [showLinkModal, setShowLinkModal] = useState(false)
     const [selectedProposalId, setSelectedProposalId] = useState('')
-
+    //spinnner
+    const[loading,setLoading]=useState(true)
     const token = localStorage.getItem('token')
 
     const getProposals = async () => {
@@ -28,6 +29,7 @@ function Proposals() {
         if (response.status === 200) {
             setProposals(response.data)
         }
+        setLoading(false)
     }
 
     const handleDelete = async (id) => {
@@ -64,7 +66,7 @@ function Proposals() {
         if (status === 'Rejected') return 'bg-red-100 text-red-700'
         if (status === 'Archived') return 'bg-blue-100 text-blue-700'
     }
-
+if (loading) return <Spinner />
     return (
         <>
             <div className="flex min-h-screen bg-blue-50">
