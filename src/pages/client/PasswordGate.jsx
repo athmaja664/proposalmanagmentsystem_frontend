@@ -27,24 +27,7 @@ function PasswordGate() {
         }
     };
 
-    // const handleVerifyPassword = async () => {
-    //     if (!password) {
-    //         toast.error("Please fill the Form");
-    //         return;
-    //     }
-    //     setVerify(true);
-    //     const response = await verifyPasswordAPI({ token, password });
-    //     if (response.status === 200) {
-    //         toast.success('Welcome')
-    //         setTimeout(()=>{
-    //                navigate('/proposalview', { state: { proposal: response.data.proposal } });
-    //         },1000)
-         
-    //     } else {
-    //          toast.error(response.data.message || 'Invalid email or password')
-    //         setVerify(false);
-    //     }
-    // };
+
     const handleVerifyPassword = async () => {
     if (!password) {
         toast.error("Please fill the Form");

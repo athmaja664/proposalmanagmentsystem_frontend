@@ -102,3 +102,8 @@ export const updateProposalStatusAPI=async(id,reqBody,reqHeader)=>{
 export const clearEmptyLogsAPI = async (reqHeader) => {
     return await commonAPI('DELETE', `${serverURL}/api/auditlogs/clear-empty`, {}, reqHeader)
 }
+
+//UPDATE ADMIN PROFILE
+export const updateAdminProfileAPI=async(reqBody,reqHeader)=>{
+  return await commonAPI('PUT',`${serverURL}/api/updateadmin`,reqBody,reqHeader) 
+}
