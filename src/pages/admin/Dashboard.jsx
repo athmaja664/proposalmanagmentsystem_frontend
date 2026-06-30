@@ -140,14 +140,14 @@ function Dashboard() {
                             <tbody>
                                 {proposalData.slice(-4).map((item) => (
                                     <tr key={item._id} className="border-b">
-                                        <td className="p-2">{item.projectId.projectName}</td>
-                                        <td className="p-2 text-gray-500">{item.clientId.name}</td>
+                                        <td className="p-2">{item.projectId?.projectName}</td>
+                                        <td className="p-2 text-gray-500">{item.clientId?.name}</td>
                                         <td className="p-2">
                                             <span className={`${getStatusStyle(item.status)} px-2 py-1 rounded text-xs`}>
                                                 {item.status}
                                             </span>
                                         </td>
-                                        <td className="p-2 text-gray-500">{item.createdAt.slice(0, 10)}</td>
+                                        <td className="p-2 text-gray-500">{item.createdAt?.slice(0, 10)}</td>
                                     </tr>
                                 ))}
 
